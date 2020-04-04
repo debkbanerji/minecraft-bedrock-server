@@ -1,0 +1,26 @@
+{
+  "name": "minecraft-ubuntu-node",
+  "version": "2020.4.3",
+  "description": "Node wrapper for Minecraft Bedrock server",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "develop": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/debkbanerji/minecraft-ubuntu-node.git"
+  },
+  "author": "Deb Banerji",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/debkbanerji/minecraft-ubuntu-node/issues"
+  },
+  "homepage": "https://github.com/debkbanerji/minecraft-ubuntu-node#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "express": "^4.16.3",
+    "unzipper": "^0.10.10"
+  }
+}

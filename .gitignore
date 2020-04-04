@@ -1,0 +1,31 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# dotenv environment variables file
+.env
+
+# IDE
+.idea
+
+# Package lock
+package-lock.json
+
+# Raw Bedrock server code
+bedrock-server-1.14.32.1
+bedrock-server-1.14.32.1.zip
+
+# Worlds
+worlds
+
+# Config file
+config.json

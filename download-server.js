@@ -1,10 +1,9 @@
+// Downloads the server code from Microsoft
 const fs = require('fs');
 const assert = require('assert');
 const https = require('https');
 const unzipper = require('unzipper')
 const util = require('util');
-
-
 const {
   UNZIPPED_SERVER_FOLDER_NAME,
   UNZIPPED_SERVER_FOLDER_PATH,

@@ -8,6 +8,8 @@ const ZIPPED_SERVER_PATH = `${UNZIPPED_SERVER_FOLDER_PATH}.zip`;
 const SERVER_EXECUTABLE_PATH = `${UNZIPPED_SERVER_FOLDER_PATH}/bedrock_server`;
 const WINDOWS_SERVER_LINK = `https://minecraft.azureedge.net/bin-linux/${UNZIPPED_SERVER_FOLDER_NAME}.zip`;
 const LINUX_SERVER_LINK = `https://minecraft.azureedge.net/bin-linux/${UNZIPPED_SERVER_FOLDER_NAME}.zip`;
+const SERVER_PROPERTIES_FILE_NAME = 'server.properties';
+const SERVER_PROPERTIES_FILE_PATH = `${UNZIPPED_SERVER_FOLDER_PATH}/${SERVER_PROPERTIES_FILE_NAME}`;
 
 const platform = os.platform();
 
@@ -20,5 +22,7 @@ module.exports = {
   SERVER_EXECUTABLE_PATH,
   WINDOWS_SERVER_LINK,
   LINUX_SERVER_LINK,
+  SERVER_PROPERTIES_FILE_NAME,
+  SERVER_PROPERTIES_FILE_PATH,
   platform
 }

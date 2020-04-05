@@ -3,16 +3,17 @@ const assert = require('assert');
 const {
   spawn
 } = require('child_process');
-
 const {
   CONFIG_FILE_PATH,
   UNZIPPED_SERVER_FOLDER_PATH,
   platform
-} = require('./utils.js')
-
+} = require('./utils.js');
 const {
   downloadServerIfNotExists
-} = require('./download-server.js')
+} = require('./download-server.js');
+const {
+  createServerProperties
+} = require('./create-server-properties.js');
 
 
 const configFile = fs.readFileSync(CONFIG_FILE_PATH, 'utf8');
@@ -21,6 +22,8 @@ assert(config['accept-official-minecraft-server-eula'], "You must accept the min
 
 
 downloadServerIfNotExists(platform).then(() => {
+  createServerProperties();
+
   console.log('\nStarting Bedrock server...\n\n');
 
   let bs = null;

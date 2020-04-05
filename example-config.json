@@ -1,4 +1,6 @@
-// RENAME THIS FILE TO 'config.json' and delete this line before starting
+// Rename this file to 'config.json' and delete this line before starting.
+// DO NOT commit this file to version control once you have added your
+// AWS S3 credentials.
 {
   "accept-official-minecraft-server-eula": true,
   "server-properties": {

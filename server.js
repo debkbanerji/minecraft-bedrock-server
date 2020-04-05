@@ -20,7 +20,7 @@ const config = JSON.parse(configFile);
 assert(config.accept_official_minecraft_server_eula, "You must accept the minecraft EULA on https://www.minecraft.net/en-us/download/server/bedrock/ by setting the flag in the config file to true in order to use this software");
 
 
-downloadServerIfNotExists(platform).then((result) => {
+downloadServerIfNotExists(platform).then(() => {
   console.log('\nStarting Bedrock server...\n\n');
 
   let bs = null;
@@ -34,7 +34,7 @@ downloadServerIfNotExists(platform).then((result) => {
   } else {
     throw 'Unsupported platform - must be Windows 10 or Ubuntu 18+ based';
   }
-  
+
   bs.stdout.on('data', (data) => {
     console.log(`${data}`);
   });

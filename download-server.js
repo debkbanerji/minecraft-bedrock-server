@@ -16,7 +16,7 @@ const LINUX_SERVER_LINK = `https://minecraft.azureedge.net/bin-linux/${UNZIPPED_
 const downloadServerIfNotExists = util.promisify((platform, callback) => {
   if (fs.existsSync(UNZIPPED_SERVER_FOLDER_PATH)) {
     console.log(`Minecraft server (${UNZIPPED_SERVER_FOLDER_PATH}) already exists - no need to redownload`)
-    callback(false); // return false if the server already exists
+    callback(null, false); // return false if the server already exists
   } else {
     const zippedWriteStream = fs.createWriteStream(ZIPPED_SERVER_PATH);
     let serverLink = null;
@@ -39,7 +39,7 @@ const downloadServerIfNotExists = util.promisify((platform, callback) => {
           // Mark the executable with 'chmod +x'
           fs.chmodSync(SERVER_EXECUTABLE_PATH, '755');
           console.log(`Marked ${SERVER_EXECUTABLE_PATH} as executable`)
-          callback(true); // return true if we had to redownload
+          callback(null, true); // return true if we had to redownload
         });
       });
     });

@@ -1,16 +1,16 @@
 const fs = require('fs');
-const os = require('os');
 const assert = require('assert');
 const {
   spawn
 } = require('child_process');
 
-const platform = os.platform();
-
-const CONFIG_FILE_PATH = './config.json'
+const {
+  CONFIG_FILE_PATH,
+  UNZIPPED_SERVER_FOLDER_PATH,
+  platform
+} = require('./utils.js')
 
 const {
-  UNZIPPED_SERVER_FOLDER_PATH,
   downloadServerIfNotExists
 } = require('./download-server.js')
 

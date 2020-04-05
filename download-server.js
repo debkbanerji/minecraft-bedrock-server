@@ -1,17 +1,18 @@
 const fs = require('fs');
-const os = require('os');
 const assert = require('assert');
 const https = require('https');
 const unzipper = require('unzipper')
 const util = require('util');
 
 
-const UNZIPPED_SERVER_FOLDER_NAME = 'bedrock-server-1.14.32.1';
-const UNZIPPED_SERVER_FOLDER_PATH = `./${UNZIPPED_SERVER_FOLDER_NAME}`;
-const ZIPPED_SERVER_PATH = `${UNZIPPED_SERVER_FOLDER_PATH}.zip`;
-const SERVER_EXECUTABLE_PATH = `${UNZIPPED_SERVER_FOLDER_PATH}/bedrock_server`;
-const WINDOWS_SERVER_LINK = `https://minecraft.azureedge.net/bin-linux/${UNZIPPED_SERVER_FOLDER_NAME}.zip`;
-const LINUX_SERVER_LINK = `https://minecraft.azureedge.net/bin-linux/${UNZIPPED_SERVER_FOLDER_NAME}.zip`;
+const {
+  UNZIPPED_SERVER_FOLDER_NAME,
+  UNZIPPED_SERVER_FOLDER_PATH,
+  ZIPPED_SERVER_PATH,
+  SERVER_EXECUTABLE_PATH,
+  WINDOWS_SERVER_LINK,
+  LINUX_SERVER_LINK
+} = require('./utils.js');
 
 const downloadServerIfNotExists = util.promisify((platform, callback) => {
   if (fs.existsSync(UNZIPPED_SERVER_FOLDER_PATH)) {

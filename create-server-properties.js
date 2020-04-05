@@ -1,1 +1,1 @@
-// TODO: Implement
+// Creates the server properties from config.json

@@ -17,7 +17,7 @@ const {
 
 const configFile = fs.readFileSync(CONFIG_FILE_PATH, 'utf8');
 const config = JSON.parse(configFile);
-assert(config.accept_official_minecraft_server_eula, "You must accept the minecraft EULA on https://www.minecraft.net/en-us/download/server/bedrock/ by setting the flag in the config file to true in order to use this software");
+assert(config['accept-official-minecraft-server-eula'], "You must accept the minecraft EULA on https://www.minecraft.net/en-us/download/server/bedrock/ by setting the flag in the config file to true in order to use this software");
 
 
 downloadServerIfNotExists(platform).then(() => {

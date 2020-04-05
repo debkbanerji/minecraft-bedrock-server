@@ -22,34 +22,33 @@ assert(config['accept-official-minecraft-server-eula'], "You must accept the min
 
 
 downloadServerIfNotExists(platform).then(() => {
-  createServerProperties();
+  createServerProperties().then(() => {
+      console.log('\nStarting Bedrock server...\n\n');
 
-  console.log('\nStarting Bedrock server...\n\n');
+      let bs = null;
+      if (platform === 'linux') {
+        bs = spawn('./bedrock_server', [], {
+          stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+          cwd: UNZIPPED_SERVER_FOLDER_PATH
+        });
+      } else if (platform === 'win32') {
+        throw 'Unimplemented';
+      } else {
+        throw 'Unsupported platform - must be Windows 10 or Ubuntu 18+ based';
+      }
 
-  let bs = null;
-  if (platform === 'linux') {
-    bs = spawn('./bedrock_server', [], {
-      stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-      cwd: UNZIPPED_SERVER_FOLDER_PATH
-    });
-  } else if (platform === 'win32') {
-    throw 'Unimplemented';
-  } else {
-    throw 'Unsupported platform - must be Windows 10 or Ubuntu 18+ based';
-  }
+      bs.stdout.on('data', (data) => {
+        console.log(`${data}`);
+      });
 
-  bs.stdout.on('data', (data) => {
-    console.log(`${data}`);
+      bs.stderr.on('data', (error) => {
+        console.error(`Minecraft server error: ${error}`);
+      });
+
+      bs.on('close', (code) => {
+        console.log(`Minecraft server child process exited with code ${code}`);
+      });
   });
-
-  bs.stderr.on('data', (error) => {
-    console.error(`Minecraft server error: ${error}`);
-  });
-
-  bs.on('close', (code) => {
-    console.log(`Minecraft server child process exited with code ${code}`);
-  });
-
 }).catch((error) => {
   console.error(error);
 });;

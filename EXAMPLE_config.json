@@ -1,6 +1,13 @@
-// Rename this file to 'config.json' and delete this line before starting.
+// Rename this file to 'config.json' and delete this comment before starting
+//
 // DO NOT commit this file to version control once you have added your
-// AWS S3 credentials.
+// AWS S3 credentials
+//
+// See bedrock_server_how_to.html for more detailed information about what
+// each of the fields in "server-properties" do
+//
+// Delete all the lines not below this one
+
 {
   "accept-official-minecraft-server-eula": true,
   "server-properties": {

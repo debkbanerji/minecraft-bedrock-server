@@ -9,7 +9,7 @@
 // Delete all the lines not below this one
 
 {
-  "accept-official-minecraft-server-eula": true,
+  "accept-official-minecraft-server-eula": false,
   "server-properties": {
     "server-name": "Dedicated Node S3 Server",
     "gamemode": "survival",

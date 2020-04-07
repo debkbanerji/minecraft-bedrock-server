@@ -20,6 +20,7 @@
   "homepage": "https://github.com/debkbanerji/minecraft-bedrock-node#readme",
   "devDependencies": {},
   "dependencies": {
+    "cross-spawn": "^7.0.2",
     "express": "^4.16.3",
     "unzipper": "^0.10.10"
   }

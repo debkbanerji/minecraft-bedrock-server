@@ -5,17 +5,22 @@ const {
   Writable
 } = require('stream');
 const readline = require('readline');
-const {
+let {
   spawn
 } = require('child_process');
 
+
 const {
   CONFIG_FILE_PATH,
+  UNZIPPED_SERVER_FOLDER_NAME,
   UNZIPPED_SERVER_FOLDER_PATH,
   MS_IN_MIN,
   MS_IN_SEC,
   platform
 } = require('./utils.js');
+if (platform === 'win32') {
+  spawn = require('cross-spawn');
+}
 const {
   downloadServerIfNotExists
 } = require('./download-server.js');
@@ -56,7 +61,9 @@ downloadServerIfNotExists(platform).then(() => {
         cwd: UNZIPPED_SERVER_FOLDER_PATH
       });
     } else if (platform === 'win32') {
-      throw 'Unimplemented';
+      bs = spawn(`${UNZIPPED_SERVER_FOLDER_NAME}/bedrock_server.exe`, [], {
+        stdio: ['pipe', 'pipe', 'pipe', 'ipc']
+      })
     } else {
       throw 'Unsupported platform - must be Windows 10 or Ubuntu 18+ based';
     }

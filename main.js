@@ -40,6 +40,7 @@ const backupFrequencyMS = backupConfig['backup-frequency-min'] * MS_IN_MIN;
 const minBackupFrequencyMinutes = 10;
 assert(backupFrequencyMS > MS_IN_MIN * minBackupFrequencyMinutes, `Expected backup['backup-frequency-min'] to be greater than ${minBackupFrequencyMinutes}`);
 let isCurrentlyBackingUp = false;
+let hasSentStopCommand = false;
 const SAVE_QUERY_FREQUENCY = MS_IN_SEC * 5;
 
 downloadServerIfNotExists(platform).then(() => {
@@ -71,6 +72,15 @@ downloadServerIfNotExists(platform).then(() => {
           isCurrentlyBackingUp = false;
           bs.stdin.write('save resume\r\n');
           console.log(`Created Backup based on server state at ${(new Date(backupTime * 1000)).toLocaleString()} (Unixtime: ${backupTime})`);
+          // stop here, since the backup before stop has completed;
+          if (hasSentStopCommand) {
+            clearInterval(saveQueryInterval);
+            clearInterval(saveHoldInterval);
+            bs.stdin.write('stop\r\n');
+            setTimeout(() => {
+              process.exit(0);
+            }, MS_IN_SEC);
+          }
         }
 
         // TODO: Actually create backup
@@ -92,25 +102,25 @@ downloadServerIfNotExists(platform).then(() => {
       console.log(`Minecraft server child process exited with code ${code}`);
     });
 
-    setInterval(() => {
-      if (!hasSentStopCommand && !isCurrentlyBackingUp) {
+    const saveQueryInterval = setInterval(() => {
+      if (!isCurrentlyBackingUp) {
         bs.stdin.write('save query\r\n');
       }
     }, SAVE_QUERY_FREQUENCY);
 
-    setInterval(() => {
+    const saveHoldInterval = setInterval(() => {
       if (!hasSentStopCommand && !isCurrentlyBackingUp) {
+        // only try to backup if hasSentStopCommand isn't running
         bs.stdin.write('save hold\r\n');
       }
     }, backupFrequencyMS);
 
 
-    let hasSentStopCommand = false;
     rl.on('line', (line) => {
       if (/^(stop|exit)/i.test(line)) {
+        console.log('Backing up, then killing Minecraft server...');
         hasSentStopCommand = true;
-        console.log('Sending stop command to Minecraft server...');
-        bs.stdin.write('stop\r\n')
+        bs.stdin.write('save hold\r\n');
       }
     })
   });

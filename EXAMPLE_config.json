@@ -34,5 +34,8 @@
     "player-movement-distance-threshold": 0.3,
     "player-movement-duration-threshold-in-ms": 500,
     "correct-player-movement": false
+  },
+  "backup": {
+    "backup-frequency-min": 15
   }
 }

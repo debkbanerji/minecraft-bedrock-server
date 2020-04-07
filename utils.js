@@ -35,6 +35,9 @@ const SERVER_PROPERTIES_FIELDS = [
   'player-movement-duration-threshold-in-ms',
   'correct-player-movement'
 ]
+const SEC_IN_MIN = 60;
+const MS_IN_SEC = 1000;
+const MS_IN_MIN = MS_IN_SEC * SEC_IN_MIN;
 
 
 const platform = os.platform();
@@ -51,5 +54,8 @@ module.exports = {
   SERVER_PROPERTIES_FILE_NAME,
   SERVER_PROPERTIES_FILE_PATH,
   SERVER_PROPERTIES_FIELDS,
+  SEC_IN_MIN,
+  MS_IN_SEC,
+  MS_IN_MIN,
   platform
 }

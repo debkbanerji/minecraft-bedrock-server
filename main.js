@@ -91,7 +91,9 @@ downloadServerIfNotExists(platform).then(() => {
           }
         }
 
-        createBackup(backupStartTime, onBackupComplete);
+        const dataSplit = data.toString().split('Data saved. Files are now ready to be copied.');
+        backupFileListString = dataSplit[dataSplit.length - 1].replace(/(\n|\r|\\n|\\r)/g, '');
+        createBackup(backupFileListString, backupStartTime, onBackupComplete);
       } else {
         console.log(`${data.toString().replace(/\n$/, '')}`);
       }

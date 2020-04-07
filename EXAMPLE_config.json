@@ -36,6 +36,6 @@
     "correct-player-movement": false
   },
   "backup": {
-    "backup-frequency-min": 15
+    "backup-frequency-minutes": 15
   }
 }

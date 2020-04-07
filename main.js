@@ -4,16 +4,11 @@ const {
   Readable,
   Writable
 } = require('stream');
-var readline = require('readline');
-var rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false
-});
-
+const readline = require('readline');
 const {
   spawn
 } = require('child_process');
+
 const {
   CONFIG_FILE_PATH,
   UNZIPPED_SERVER_FOLDER_PATH,
@@ -27,8 +22,15 @@ const {
 const {
   createServerProperties
 } = require('./create-server-properties.js');
+const {
+  createBackup
+} = require('./backup.js');
 
-
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
 const configFile = fs.readFileSync(CONFIG_FILE_PATH, 'utf8');
 const config = JSON.parse(configFile);
 assert(config['accept-official-minecraft-server-eula'], "You must accept the minecraft EULA on https://www.minecraft.net/en-us/download/server/bedrock/ by setting the flag in the config file to true in order to use this software");
@@ -36,7 +38,7 @@ assert(config['accept-official-minecraft-server-eula'], "You must accept the min
 const backupConfig = config.backup;
 assert(backupConfig, `Could not find field 'backup' at root of config`);
 
-const backupFrequencyMS = backupConfig['backup-frequency-min'] * MS_IN_MIN;
+const backupFrequencyMS = backupConfig['backup-frequency-minutes'] * MS_IN_MIN;
 const minBackupFrequencyMinutes = 10;
 assert(backupFrequencyMS > MS_IN_MIN * minBackupFrequencyMinutes, `Expected backup['backup-frequency-min'] to be greater than ${minBackupFrequencyMinutes}`);
 let isCurrentlyBackingUp = false;
@@ -66,12 +68,11 @@ downloadServerIfNotExists(platform).then(() => {
       } else if (/^(Data saved\. Files are now ready to be copied\.)/i.test(data)) {
         isCurrentlyBackingUp = true;
 
-        const backupTime = Math.floor(new Date() / 1000);
+        const backupStartTime = Math.floor(new Date() / 1000);
 
         const onBackupComplete = () => {
           isCurrentlyBackingUp = false;
           bs.stdin.write('save resume\r\n');
-          console.log(`Created Backup based on server state at ${(new Date(backupTime * 1000)).toLocaleString()} (Unixtime: ${backupTime})`);
           // stop here, since the backup before stop has completed;
           if (hasSentStopCommand) {
             clearInterval(saveQueryInterval);
@@ -83,8 +84,7 @@ downloadServerIfNotExists(platform).then(() => {
           }
         }
 
-        // TODO: Actually create backup
-        onBackupComplete();
+        createBackup(backupStartTime, onBackupComplete);
       } else {
         console.log(`${data.toString().replace(/\n$/, '')}`);
       }
@@ -108,19 +108,26 @@ downloadServerIfNotExists(platform).then(() => {
       }
     }, SAVE_QUERY_FREQUENCY);
 
-    const saveHoldInterval = setInterval(() => {
+    const triggerBackup = () => {
       if (!hasSentStopCommand && !isCurrentlyBackingUp) {
-        // only try to backup if hasSentStopCommand isn't running
+        // don't backup if hasSentStopCommand is true
         bs.stdin.write('save hold\r\n');
       }
-    }, backupFrequencyMS);
+    }
+    const saveHoldInterval = setInterval(triggerBackup, backupFrequencyMS);
 
 
     rl.on('line', (line) => {
-      if (/^(stop|exit)/i.test(line)) {
+      if (/^(stop|exit)$/i.test(line)) {
         console.log('Backing up, then killing Minecraft server...');
         hasSentStopCommand = true;
         bs.stdin.write('save hold\r\n');
+      } else if (/^(save.*)/i.test(line)) {
+        // intercept saves
+      } else if (/^(backup)/i.test(line)) {
+        triggerBackup();
+      } else {
+        // TODO: figure out how to pipe this to the server
       }
     })
   });

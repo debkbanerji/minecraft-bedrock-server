@@ -6,7 +6,7 @@ const util = require('util');
 
 const createBackup = util.promisify((backupStartTime, callback) => {
   // TODO: Actually create backup
-  console.log(`Created Backup based on server state at ${(new Date(backupStartTime * 1000)).toLocaleString()} (Unixtime: ${backupStartTime})`);
+  console.log(`Created Backup based of server state at ${(new Date(backupStartTime * 1000)).toLocaleString()} (Unixtime: ${backupStartTime})`);
   callback();
 });
 

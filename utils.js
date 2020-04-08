@@ -10,6 +10,8 @@ const WINDOWS_SERVER_LINK = `https://minecraft.azureedge.net/bin-win/${UNZIPPED_
 const LINUX_SERVER_LINK = `https://minecraft.azureedge.net/bin-linux/${UNZIPPED_SERVER_FOLDER_NAME}.zip`;
 const SERVER_PROPERTIES_FILE_NAME = 'server.properties';
 const SERVER_PROPERTIES_FILE_PATH = `${UNZIPPED_SERVER_FOLDER_PATH}/${SERVER_PROPERTIES_FILE_NAME}`;
+const BACKUP_FOLDER_NAME = 'backups'
+const BACKUP_FOLDER_PATH = `./${BACKUP_FOLDER_NAME}`;
 const SERVER_PROPERTIES_FIELDS = [
   'server-name',
   'gamemode',

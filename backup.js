@@ -4,7 +4,7 @@ const assert = require('assert');
 const unzipper = require('unzipper')
 const util = require('util');
 
-const createBackup = (backupFileListString, backupStartTime, callback) => {
+const createBackup = util.promisify((backupFileListString, backupStartTime, callback) => {
   // TODO: Actually create backup
   const instructionStrings = backupFileListString.split(', ');
   const fileToCopyLength = {};
@@ -16,7 +16,7 @@ const createBackup = (backupFileListString, backupStartTime, callback) => {
 
   console.log(`Created Backup based of server state at ${(new Date(backupStartTime * 1000)).toLocaleString()} (Unixtime: ${backupStartTime})`);
   callback();
-};
+});
 
 module.exports = {
   createBackup

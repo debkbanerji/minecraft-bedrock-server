@@ -77,7 +77,9 @@ downloadServerIfNotExists(platform).then(() => {
 
         const backupStartTime = Math.floor(new Date() / 1000);
 
-        const onBackupComplete = () => {
+        const dataSplit = data.toString().split('Data saved. Files are now ready to be copied.');
+        backupFileListString = dataSplit[dataSplit.length - 1].replace(/(\n|\r|\\n|\\r)/g, '');
+        createBackup(backupFileListString, backupStartTime).then(() => {
           isCurrentlyBackingUp = false;
           bs.stdin.write('save resume\r\n');
           // stop here, since the backup before stop has completed;
@@ -89,11 +91,8 @@ downloadServerIfNotExists(platform).then(() => {
               process.exit(0);
             }, MS_IN_SEC);
           }
-        }
+        });
 
-        const dataSplit = data.toString().split('Data saved. Files are now ready to be copied.');
-        backupFileListString = dataSplit[dataSplit.length - 1].replace(/(\n|\r|\\n|\\r)/g, '');
-        createBackup(backupFileListString, backupStartTime, onBackupComplete);
       } else {
         console.log(`${data.toString().replace(/\n$/, '')}`);
       }

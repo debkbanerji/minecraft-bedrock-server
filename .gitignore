@@ -24,8 +24,8 @@ package-lock.json
 bedrock-server-1.14.32.1
 bedrock-server-1.14.32.1.zip
 
-# Worlds
-worlds
+# Backups
+backups
 
 # Config file
 config.json

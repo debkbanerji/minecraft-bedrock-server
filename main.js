@@ -51,7 +51,7 @@ let hasSentStopCommand = false;
 const SAVE_QUERY_FREQUENCY = MS_IN_SEC * 5;
 
 downloadServerIfNotExists(platform).then(() => {
-  createServerProperties().then(() => {
+  createServerProperties().then(async () => {
     console.log('\nStarting Minecraft Bedrock server...\n\n');
 
     let bs = null;
@@ -69,7 +69,7 @@ downloadServerIfNotExists(platform).then(() => {
     }
 
     let lastQueryWasSaveSucccessful = false;
-    bs.stdout.on('data', (data) => {
+    bs.stdout.on('data', async (data) => {
       if (/^(A previous save has not been completed\.|Saving\.\.\.|Changes to the level are resumed\.)/i.test(data)) {
         // do nothing
       } else if (/^(Data saved\. Files are now ready to be copied\.)/i.test(data)) {
@@ -79,20 +79,18 @@ downloadServerIfNotExists(platform).then(() => {
 
         const dataSplit = data.toString().split('Data saved. Files are now ready to be copied.');
         backupFileListString = dataSplit[dataSplit.length - 1].replace(/(\n|\r|\\n|\\r)/g, '');
-        createBackup(backupFileListString, backupStartTime).then(() => {
-          isCurrentlyBackingUp = false;
-          bs.stdin.write('save resume\r\n');
-          // stop here, since the backup before stop has completed;
-          if (hasSentStopCommand) {
-            clearInterval(saveQueryInterval);
-            clearInterval(saveHoldInterval);
-            bs.stdin.write('stop\r\n');
-            setTimeout(() => {
-              process.exit(0);
-            }, MS_IN_SEC);
-          }
-        });
-
+        await createBackup(backupFileListString, backupStartTime);
+        isCurrentlyBackingUp = false;
+        bs.stdin.write('save resume\r\n');
+        // stop here, since the backup before stop has completed;
+        if (hasSentStopCommand) {
+          clearInterval(saveQueryInterval);
+          clearInterval(saveHoldInterval);
+          bs.stdin.write('stop\r\n');
+          setTimeout(() => {
+            process.exit(0);
+          }, MS_IN_SEC);
+        }
       } else {
         console.log(`${data.toString().replace(/\n$/, '')}`);
       }
@@ -141,4 +139,4 @@ downloadServerIfNotExists(platform).then(() => {
   });
 }).catch((error) => {
   console.error(error);
-});;
+});

@@ -34,7 +34,9 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
     const destination = `${backupDirPath}/${fileName}`;
     await fs.ensureFile(destination);
     await pipeline(
-      fs.createReadStream(source,{end: contentLength}),
+      fs.createReadStream(source, {
+        end: contentLength - 1
+      }),
       fs.createWriteStream(destination),
     );
   });

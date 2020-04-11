@@ -76,6 +76,7 @@ downloadServerIfNotExists(platform).then(() => {
         isCurrentlyBackingUp = true;
 
         const backupStartTime = Math.floor(new Date() / 1000);
+        console.log(`Files ready for backup! Creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()}...`);
 
         const dataSplit = data.toString().split('Data saved. Files are now ready to be copied.');
         backupFileListString = dataSplit[dataSplit.length - 1].replace(/(\n|\r|\\n|\\r)/g, '');
@@ -117,6 +118,7 @@ downloadServerIfNotExists(platform).then(() => {
     const triggerBackup = () => {
       if (!hasSentStopCommand && !isCurrentlyBackingUp) {
         // don't backup if hasSentStopCommand is true
+        console.log(`Telling server to prepare for backup...`);
         bs.stdin.write('save hold\r\n');
       }
     }

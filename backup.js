@@ -15,7 +15,7 @@ const {
   platform
 } = require('./utils.js');
 
-const createBackupFromFileToCopyLength = async (fileToCopyLength, backupStartTime) => {
+async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime) {
   const backupDirPath = `${BACKUP_FOLDER_PATH}/${backupStartTime}`;
   fs.ensureDirSync(backupDirPath);
   const copyPromises = Object.keys(fileToCopyLength).map(async (fileName) => {
@@ -36,7 +36,7 @@ const createBackupFromFileToCopyLength = async (fileToCopyLength, backupStartTim
   return;
 };
 
-const createBackup = async (backupFileListString, backupStartTime, callback) => {
+async function createBackup(backupFileListString, backupStartTime, callback) {
   const instructionStrings = backupFileListString.split(', ');
   const fileToCopyLength = {};
   instructionStrings.forEach((instruction) => {
@@ -44,7 +44,7 @@ const createBackup = async (backupFileListString, backupStartTime, callback) => 
     fileToCopyLength[splitInstruction[0]] = parseInt(splitInstruction[1]);
   });
 
-  await createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime);
+  await _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime);
 };
 
 module.exports = {

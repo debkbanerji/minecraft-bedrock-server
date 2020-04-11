@@ -18,8 +18,9 @@ const {
   platform
 } = require('./utils.js');
 
-async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime) {
-  const backupDirPath = `${BACKUP_FOLDER_PATH}/${backupStartTime}`;
+async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, backupType) {
+  assert(backupType, `Undefined backup type`);
+  const backupDirPath = `${BACKUP_FOLDER_PATH}/${backupStartTime}_${backupType}`;
   fs.ensureDirSync(backupDirPath);
   const copyPromises = Object.keys(fileToCopyLength).map(async (fileName) => {
     const contentLength = fileToCopyLength[fileName];
@@ -41,11 +42,11 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
     );
   });
   await Promise.all(copyPromises);
-  console.log(`Finished creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()}`);
+  console.log(`Finished creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}\n`);
   return;
 };
 
-async function createBackup(backupFileListString, backupStartTime, callback) {
+async function createBackup(backupFileListString, backupStartTime, backupType) {
   const instructionStrings = backupFileListString.split(', ');
   const fileToCopyLength = {};
   instructionStrings.forEach((instruction) => {
@@ -53,7 +54,7 @@ async function createBackup(backupFileListString, backupStartTime, callback) {
     fileToCopyLength[splitInstruction[0]] = parseInt(splitInstruction[1]);
   });
 
-  await _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime);
+  await _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, backupType);
 };
 
 module.exports = {

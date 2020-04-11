@@ -14,6 +14,7 @@ const {
   CONFIG_FILE_PATH,
   UNZIPPED_SERVER_FOLDER_NAME,
   UNZIPPED_SERVER_FOLDER_PATH,
+  BACKUP_TYPES,
   MS_IN_MIN,
   MS_IN_SEC,
   platform
@@ -50,9 +51,12 @@ let isCurrentlyBackingUp = false;
 let hasSentStopCommand = false;
 const SAVE_QUERY_FREQUENCY = MS_IN_SEC * 5;
 
+let currentBackupType = null;
+
 downloadServerIfNotExists(platform).then(() => {
   createServerProperties().then(async () => {
     console.log('\nStarting Minecraft Bedrock server...\n\n');
+    console.log(`!!!!!!!!!!\nWARNING: Use the 'stop' command to stop the server gracefully, or you may lose non backed up up data\n!!!!!!!!!!\n`);
 
     let bs = null;
     if (platform === 'linux') {
@@ -76,11 +80,12 @@ downloadServerIfNotExists(platform).then(() => {
         isCurrentlyBackingUp = true;
 
         const backupStartTime = Math.floor(new Date() / 1000);
-        console.log(`Files ready for backup! Creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()}...`);
+        const backupType = currentBackupType;
+        console.log(`Files ready for backup! Creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}...`);
 
         const dataSplit = data.toString().split('Data saved. Files are now ready to be copied.');
         backupFileListString = dataSplit[dataSplit.length - 1].replace(/(\n|\r|\\n|\\r)/g, '');
-        await createBackup(backupFileListString, backupStartTime);
+        await createBackup(backupFileListString, backupStartTime, backupType);
         isCurrentlyBackingUp = false;
         bs.stdin.write('save resume\r\n');
         // stop here, since the backup before stop has completed;
@@ -115,26 +120,30 @@ downloadServerIfNotExists(platform).then(() => {
       }
     }, SAVE_QUERY_FREQUENCY);
 
-    const triggerBackup = () => {
+    const triggerBackup = (backupType) => {
       if (!hasSentStopCommand && !isCurrentlyBackingUp) {
         // don't backup if hasSentStopCommand is true
-        console.log(`Telling server to prepare for backup...`);
+        console.log(`\nTelling server to prepare for backup...`);
+        currentBackupType = backupType;
         bs.stdin.write('save hold\r\n');
       }
     }
-    const saveHoldInterval = setInterval(triggerBackup, backupFrequencyMS);
+    const saveHoldInterval = setInterval(triggerBackup, backupFrequencyMS, BACKUP_TYPES.SCHEDULED);
 
 
     rl.on('line', (line) => {
       if (/^(stop|exit)$/i.test(line)) {
-        console.log('Backing up, then killing Minecraft server...');
+        console.log('\nBacking up, then killing Minecraft server...');
         hasSentStopCommand = true;
+        currentBackupType = BACKUP_TYPES.ON_STOP;
         bs.stdin.write('save hold\r\n');
       } else if (/^(save.*)/i.test(line)) {
         // intercept saves
       } else if (/^(backup)/i.test(line)) {
-        triggerBackup();
+        triggerBackup(BACKUP_TYPES.MANUAL);
       } else {
+        console.log(`Unrecognized command: ${line}`);
+        console.log('Recognized commands: backup,stop')
         // TODO: figure out how to pipe this to the server
       }
     })

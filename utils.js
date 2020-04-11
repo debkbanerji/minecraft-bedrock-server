@@ -46,6 +46,14 @@ const MS_IN_MIN = MS_IN_SEC * SEC_IN_MIN;
 
 const platform = os.platform();
 
+const BACKUP_TYPES = Object.freeze({
+  'SCHEDULED': 'SCHEDULED',
+  'MANUAL': 'MANUAL',
+  'ON_START': 'ON_START',
+  'ON_STOP': 'ON_STOP'
+});
+const BACKUP_TYPE_REGEX_FRAGMENT = `(${Object.keys(BACKUP_TYPES).join('|')})`;
+
 
 module.exports = {
   CONFIG_FILE_PATH,
@@ -57,6 +65,8 @@ module.exports = {
   LINUX_SERVER_LINK,
   BACKUP_FOLDER_NAME,
   BACKUP_FOLDER_PATH,
+  BACKUP_TYPES,
+  BACKUP_TYPE_REGEX_FRAGMENT,
   SERVER_WORLDS_FOLDER_NAME,
   SERVER_WORLDS_FOLDER_PATH,
   SERVER_PROPERTIES_FILE_NAME,

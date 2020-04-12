@@ -153,7 +153,7 @@ async function restoreLatestLocalBackup() {
   );
   const numForceStopArchives = allArchives.length - restorableArchives.length;
   if (numForceStopArchives > 0) {
-    console.log(`WARNING: Skipped ${numForceStopArchives} archives of type 'ON_FORCED_STOP' that were generated when the server exited ungracefully`);
+    console.log(`WARNING: Skipped ${numForceStopArchives} archive(s) of type 'ON_FORCED_STOP' that were generated when the server exited ungracefully`);
   }
   if (restorableArchives.length > 0) {
     await restoreLocalBackup(restorableArchives[0]);

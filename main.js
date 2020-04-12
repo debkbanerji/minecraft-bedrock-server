@@ -30,6 +30,7 @@ const {
 } = require('./create-server-properties.js');
 const {
   createBackup,
+  restoreLocalBackup,
   restoreLatestLocalBackup,
   createUnscheduledBackup
 } = require('./backup.js');
@@ -70,62 +71,60 @@ downloadServerIfNotExists(platform).then(() => {
         stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
         cwd: UNZIPPED_SERVER_FOLDER_PATH
       });
+
+      bs.stderr.on('data', (error) => {
+        console.error(`SERVER STDERROR: ${error}`);
+      });
+
+      bs.on('error', (data) => {
+        console.log(`SERVER ERROR: ${data}`);
+      });
+
+      bs.on('close', (code) => {
+        console.log(`Minecraft server child process exited with code ${code}`);
+      });
+
+      bs.stdout.on('data', async (data) => {
+        if (/^(A previous save has not been completed\.|Saving\.\.\.|Changes to the level are resumed\.)/i.test(data)) {
+          // do nothing
+        } else if (/^(Data saved\. Files are now ready to be copied\.)/i.test(data)) {
+          isCurrentlyBackingUp = true;
+
+          const backupStartTime = Math.floor(new Date() / 1000);
+          const backupType = currentBackupType;
+          console.log(`Files ready for backup! Creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}...`);
+
+          const dataSplit = data.toString().split('Data saved. Files are now ready to be copied.');
+          backupFileListString = dataSplit[dataSplit.length - 1].replace(/(\n|\r|\\n|\\r)/g, '');
+          await createBackup(backupFileListString, backupStartTime, backupType);
+          isCurrentlyBackingUp = false;
+          bs.stdin.write('save resume\r\n');
+          // stop here, since the backup before stop has completed;
+          if (hasSentStopCommand) {
+            clearInterval(saveQueryInterval);
+            clearInterval(saveHoldInterval);
+            bs.stdin.write('stop\r\n');
+            setTimeout(() => {
+              process.exit(0);
+            }, MS_IN_SEC);
+          }
+        } else {
+          console.log(`${data.toString().replace(/\n$/, '')}`);
+        }
+      });
     }
 
     if (platform === 'linux') {
       spawnServer();
-    } else if (platform === 'win32') {
-      bs = spawn(`${UNZIPPED_SERVER_FOLDER_NAME}/bedrock_server.exe`, [], {
-        stdio: ['pipe', 'pipe', 'pipe', 'ipc']
-      })
     } else {
-      throw 'Unsupported platform - must be Windows 10 or Ubuntu 18+ based';
+      throw 'Unsupported platform - must be Ubuntu 18.3+ based';
     }
 
     let lastQueryWasSaveSucccessful = false;
-    bs.stdout.on('data', async (data) => {
-      if (/^(A previous save has not been completed\.|Saving\.\.\.|Changes to the level are resumed\.)/i.test(data)) {
-        // do nothing
-      } else if (/^(Data saved\. Files are now ready to be copied\.)/i.test(data)) {
-        isCurrentlyBackingUp = true;
 
-        const backupStartTime = Math.floor(new Date() / 1000);
-        const backupType = currentBackupType;
-        console.log(`Files ready for backup! Creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}...`);
-
-        const dataSplit = data.toString().split('Data saved. Files are now ready to be copied.');
-        backupFileListString = dataSplit[dataSplit.length - 1].replace(/(\n|\r|\\n|\\r)/g, '');
-        await createBackup(backupFileListString, backupStartTime, backupType);
-        isCurrentlyBackingUp = false;
-        bs.stdin.write('save resume\r\n');
-        // stop here, since the backup before stop has completed;
-        if (hasSentStopCommand) {
-          clearInterval(saveQueryInterval);
-          clearInterval(saveHoldInterval);
-          bs.stdin.write('stop\r\n');
-          setTimeout(() => {
-            process.exit(0);
-          }, MS_IN_SEC);
-        }
-      } else {
-        console.log(`${data.toString().replace(/\n$/, '')}`);
-      }
-    });
-
-    bs.stderr.on('data', (error) => {
-      console.error(`SERVER STDERROR: ${error}`);
-    });
-
-    bs.on('error', (data) => {
-      console.log(`SERVER ERROR: ${data}`);
-    });
-
-    bs.on('close', (code) => {
-      console.log(`Minecraft server child process exited with code ${code}`);
-    });
 
     const saveQueryInterval = setInterval(() => {
-      if (!isCurrentlyBackingUp) {
+      if (!isCurrentlyBackingUp && bs) {
         bs.stdin.write('save query\r\n');
       }
     }, SAVE_QUERY_FREQUENCY);
@@ -152,16 +151,32 @@ downloadServerIfNotExists(platform).then(() => {
       process.exit(1);
     });
 
-    rl.on('line', (line) => {
+    rl.on('line', async (line) => {
       if (/^(stop|exit)$/i.test(line)) {
         triggerGracefulExit();
       } else if (/^(save.*)/i.test(line)) {
         // intercept saves
       } else if (/^(backup)/i.test(line)) {
         triggerBackup(BACKUP_TYPES.MANUAL);
+      } else if (/^(force-restore)/i.test(line)) {
+        const lineSplit = line.split('force-restore ');
+        if (lineSplit.length > 0) {
+          console.log('\n!!!!!!!!!!\nForcefully killing server and overwriting world state with specified backup - current world state will be lost');
+          bs.stdin.write('stop\r\n');
+          bs = null;
+          setTimeout(async () => {
+            const didSuccessfulyRestore = await restoreLocalBackup(lineSplit[1]);
+            if (!didSuccessfulyRestore) {
+              console.log('Unable to restore backup - restarting server as is');
+            }
+            spawnServer();
+          }, 2 * MS_IN_SEC);
+        } else {
+          console.error('USAGE: restore <BACKUP_FILE_NAME>')
+        }
       } else {
         console.log(`Unrecognized command: ${line}`);
-        console.log('Recognized commands: backup, stop')
+        console.log('Recognized commands: backup, force-restore <BACKUP_FILE_NAME>, stop')
         // TODO: figure out how to pipe this to the server
       }
     })

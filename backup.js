@@ -87,7 +87,7 @@ async function createUnscheduledBackup(backupStartTime) {
     fileToCopyLength[path] = Infinity;
   });
   await _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, BACKUP_TYPES.FORCED_STOP);
-  console.log(`\nPlease check the state of the server and make sure the latest backup is a valid one before continued use`);
+  console.log(`\nPlease check the state of the server and make sure the latest backup is a valid one before continued use (use force-restore <BACKUP_FILE_NAME> if necessary)`);
   console.log(`\nIn the future, please use the 'stop' command to kill the server`);
 }
 
@@ -104,16 +104,26 @@ async function restoreLocalBackup(backupArchiveName) {
   }
 
   const backupArchivePath = `${BACKUP_FOLDER_PATH}/${backupArchiveName}`;
-  await pipeline(
-    fs.createReadStream(backupArchivePath),
-    unzipper.Extract({
-      path: SERVER_WORLDS_FOLDER_PATH
-    })
-  );
+  if (!(await fs.pathExists(backupArchivePath))) {
+    console.error(`Could not find backup archive: ${backupArchivePath}`);
+    return false;
+  } else {
+    fs.removeSync(SERVER_WORLDS_FOLDER_PATH);
+    fs.ensureDirSync(SERVER_WORLDS_FOLDER_PATH);
+    await pipeline(
+      fs.createReadStream(backupArchivePath),
+      unzipper.Extract({
+        path: SERVER_WORLDS_FOLDER_PATH
+      })
+    );
+    console.log(`Successfully backed up state of server using ${backupArchivePath}`)
+    return true;
+  }
 }
 
 module.exports = {
   createBackup,
+  restoreLocalBackup,
   restoreLatestLocalBackup,
   createUnscheduledBackup
 };

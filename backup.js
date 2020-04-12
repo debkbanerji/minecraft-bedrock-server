@@ -92,7 +92,7 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
   } catch (e) {
     console.error(e);
   }
-  console.log(`Finished creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}\n`);
+  console.log(`Finished creating local backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}`);
 };
 
 async function createBackup(backupFileListString, backupStartTime, backupType) {
@@ -209,7 +209,12 @@ async function pushBackupToRemote(archiveName) {
     Body: readStream
   };
   s3.upload(params, function(err, data) {
-    console.log(err, data);
+    if (!err) {
+      console.log(`Successfully backed up ${archiveName} to AWS S3`);
+    } else {
+      console.log(`Error uploading ${archiveName} to AWS S3:`);
+      console.error(err);
+    }
   });
 }
 

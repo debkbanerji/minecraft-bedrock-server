@@ -84,6 +84,7 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
 
   if (s3) {
     await pushBackupToRemote(outputArchiveFileName);
+    await purgeOldRemoteBackups();
   }
 
   // purge old backups now since we may have too many
@@ -92,7 +93,7 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
   } catch (e) {
     console.error(e);
   }
-  console.log(`Finished creating local backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}`);
+  console.log(`Finished creating local backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}\n`);
 };
 
 async function createBackup(backupFileListString, backupStartTime, backupType) {
@@ -181,27 +182,40 @@ function getBackupsToPurge(backupFileNameList, maxToKeep) {
 };
 
 async function purgeOldLocalBackups() {
+  const allArchives = await fs.readdir(BACKUP_FOLDER_PATH);
   await Promise.all(Object.keys(BACKUP_TYPES).map(async (backupType) => {
     const maxBackupTypes = localBackupKeepCount[backupType];
-    const allArchives = await fs.readdir(BACKUP_FOLDER_PATH);
     const backupsToPurge = getBackupsToPurge(allArchives.filter(
       fileName => fileName.includes(backupType)
     ), maxBackupTypes);
     backupsToPurge.forEach(async (backupToPurge) => {
-      console.log(`Removing ${backupToPurge} due to parameters defined in config["backup"]["num-backups-to-keep-for-type"]`);
       await fs.remove(`${BACKUP_FOLDER_PATH}/${backupToPurge}`);
-    })
+      console.log(`Removed ${backupToPurge} from local backups folder due to parameters defined in config["backup"]["num-backups-to-keep-for-type"]["local"]`);
+    });
   }));
 }
 
 async function purgeOldRemoteBackups() {
+  const bucketContents = await s3.listObjects({
+    Bucket: bucketName
+  }).promise();
+  const allArchives = bucketContents.Contents.map(entry=>entry.Key);
   await Promise.all(Object.keys(BACKUP_TYPES).map(async (backupType) => {
     const maxBackupTypes = remoteBackupKeepCount[backupType];
-    // TODO: Implement
+    const backupsToPurge = getBackupsToPurge(allArchives.filter(
+      fileName => fileName.includes(backupType)
+    ), maxBackupTypes);
+    backupsToPurge.forEach(async (backupToPurge) => {
+      await s3.deleteObject({
+        Bucket: bucketName,
+        Key: backupToPurge
+      }).promise();
+      console.log(`Removed ${backupToPurge} from AWS S3 due to parameters defined in config["backup"]["num-backups-to-keep-for-type"]["remote"]`);
+    });
   }));
 }
 
-async function pushBackupToRemote(archiveName) {
+const pushBackupToRemote = util.promisify((archiveName, callback) => {
   const readStream = fs.createReadStream(`${BACKUP_FOLDER_PATH}/${archiveName}`);
   var params = {
     Bucket: bucketName,
@@ -211,16 +225,27 @@ async function pushBackupToRemote(archiveName) {
   s3.upload(params, function(err, data) {
     if (!err) {
       console.log(`Successfully backed up ${archiveName} to AWS S3`);
+      callback();
     } else {
       console.log(`Error uploading ${archiveName} to AWS S3:`);
       console.error(err);
     }
   });
+});
+
+function getRemoteBackupsToDownload(allRemoteBackups, allLocalBackups) {
+  const lists = Object.keys(BACKUP_TYPES).map(async (backupType) => {
+    const maxBackupTypes = remoteBackupKeepCount[backupType];
+    // TODO: Implement
+  });
+  const merged = [].concat.apply([], lists);
+  return lists;
 }
 
 async function downloadRemoteBackups(archiveName) {
   console.log('Downloading remote backups from AWS S3...');
   // TODO: Implement
+  await purgeOldLocalBackups();
 }
 
 module.exports = {

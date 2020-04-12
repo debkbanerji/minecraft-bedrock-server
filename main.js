@@ -29,7 +29,9 @@ const {
   createServerProperties
 } = require('./create-server-properties.js');
 const {
-  createBackup
+  createBackup,
+  restoreLatestLocalBackup,
+  createUnscheduledBackup
 } = require('./backup.js');
 
 const rl = readline.createInterface({
@@ -55,7 +57,10 @@ let currentBackupType = null;
 
 downloadServerIfNotExists(platform).then(() => {
   createServerProperties().then(async () => {
-    console.log('\nStarting Minecraft Bedrock server...\n\n');
+    console.log('\nRestoring latest local backup...');
+    await restoreLatestLocalBackup();
+
+    console.log('\nStarting Minecraft Bedrock server...\n');
     console.log(`!!!!!!!!!!\nWARNING: Use the 'stop' command to stop the server gracefully, or you may lose non backed up up data\n!!!!!!!!!!\n`);
 
     let bs = null;
@@ -130,13 +135,21 @@ downloadServerIfNotExists(platform).then(() => {
     }
     const saveHoldInterval = setInterval(triggerBackup, backupFrequencyMS, BACKUP_TYPES.SCHEDULED);
 
+    const triggerGracefulExit = () => {
+      console.log('\nBacking up, then killing Minecraft server...');
+      hasSentStopCommand = true;
+      currentBackupType = BACKUP_TYPES.ON_STOP;
+      bs.stdin.write('save hold\r\n');
+    }
+
+    process.on('SIGINT', async () => {
+      await createUnscheduledBackup(Math.floor(new Date() / 1000));
+      process.exit(1);
+    });
 
     rl.on('line', (line) => {
       if (/^(stop|exit)$/i.test(line)) {
-        console.log('\nBacking up, then killing Minecraft server...');
-        hasSentStopCommand = true;
-        currentBackupType = BACKUP_TYPES.ON_STOP;
-        bs.stdin.write('save hold\r\n');
+        triggerGracefulExit();
       } else if (/^(save.*)/i.test(line)) {
         // intercept saves
       } else if (/^(backup)/i.test(line)) {

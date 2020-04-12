@@ -15,6 +15,7 @@ const {
   SERVER_WORLDS_FOLDER_PATH,
   BACKUP_FOLDER_NAME,
   BACKUP_FOLDER_PATH,
+  BACKUP_TYPES,
   MS_IN_SEC,
   platform
 } = require('./utils.js');
@@ -33,7 +34,7 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
     if (!(await fs.pathExists(`${SERVER_WORLDS_FOLDER_PATH}/${fileName}`))) {
       fileName = fileName.replace('/', '/db/');
     }
-    if (!(await fs.pathExists(`${SERVER_WORLDS_FOLDER_PATH}/db/${fileName}`))) {
+    if (!(await fs.pathExists(`${SERVER_WORLDS_FOLDER_PATH}/${fileName}`))) {
       fileName = fileName.replace('/db/', '/db/lost/');
     }
 
@@ -61,6 +62,58 @@ async function createBackup(backupFileListString, backupStartTime, backupType) {
   await _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, backupType);
 };
 
+
+function getFilePathsSync(dir, files_) {
+  files_ = files_ || [];
+  const files = fs.readdirSync(dir);
+  for (var i in files) {
+    const name = dir + '/' + files[i];
+    if (fs.statSync(name).isDirectory()) {
+      getFilePathsSync(name, files_);
+    } else {
+      files_.push(name);
+    }
+  }
+  return files_;
+}
+
+async function createUnscheduledBackup(backupStartTime) {
+  // blindly tries to create a backup of everything in the current worlds folder
+  // without the file and position list provided by 'save query'
+  console.log('!!!!!!!!!!!\n\nRECEIVED SIGINT! - creating a sketchy ad hoc backup of server state...');
+  const filePaths = getFilePathsSync(SERVER_WORLDS_FOLDER_PATH).map(filePath => filePath.replace(`${SERVER_WORLDS_FOLDER_PATH}/`, ''));
+  const fileToCopyLength = {};
+  filePaths.forEach(path => {
+    fileToCopyLength[path] = Infinity;
+  });
+  await _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, BACKUP_TYPES.FORCED_STOP);
+  console.log(`\nPlease check the state of the server and make sure the latest backup is a valid one before continued use`);
+  console.log(`\nIn the future, please use the 'stop' command to kill the server`);
+}
+
+async function restoreLatestLocalBackup() {
+  fs.ensureDirSync(BACKUP_FOLDER_PATH);
+  const backupFiles = await fs.readdir(BACKUP_FOLDER_PATH);
+  // TODO: Restore and test
+}
+
+async function restoreLocalBackup(backupArchiveName) {
+
+  if (!/\.zip$/gi.test(backupArchiveName)) {
+    backupArchiveName = backupArchiveName + '.zip';
+  }
+
+  const backupArchivePath = `${BACKUP_FOLDER_PATH}/${backupArchiveName}`;
+  await pipeline(
+    fs.createReadStream(backupArchivePath),
+    unzipper.Extract({
+      path: SERVER_WORLDS_FOLDER_PATH
+    })
+  );
+}
+
 module.exports = {
-  createBackup
+  createBackup,
+  restoreLatestLocalBackup,
+  createUnscheduledBackup
 };

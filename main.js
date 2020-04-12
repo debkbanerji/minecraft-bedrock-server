@@ -62,7 +62,6 @@ downloadServerIfNotExists(platform).then(() => {
   createServerProperties().then(async () => {
     await createBackupBucketIfNotExists();
     await downloadRemoteBackups();
-    console.log('\nRestoring latest local backup...');
     await restoreLatestLocalBackup();
 
     console.log('\nStarting Minecraft Bedrock server...\n');

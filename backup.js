@@ -137,10 +137,30 @@ async function createUnscheduledBackup(backupStartTime) {
 }
 
 async function restoreLatestLocalBackup() {
+  console.log('\nRestoring latest local backup...');
   fs.ensureDirSync(BACKUP_FOLDER_PATH);
   const backupFiles = await fs.readdir(BACKUP_FOLDER_PATH);
   // TODO: Restore and test
-  console.log('TODO: IMPLEMENT')
+  const allArchives = await fs.readdir(BACKUP_FOLDER_PATH);
+  allArchives.sort((name1, name2) => {
+    const ts1Match = name1.match(/\d*/);
+    const ts2Match = name2.match(/\d*/);
+    const ts1 = parseInt(ts1Match[0]);
+    const ts2 = parseInt(ts2Match[0]);
+    return ts2 - ts1;
+  });
+  const restorableArchives = allArchives.filter(
+    fileName => !fileName.includes(BACKUP_TYPES.ON_FORCED_STOP)
+  );
+  const numForceStopArchives = allArchives.length-restorableArchives.length;
+  if (numForceStopArchives>0) {
+    console.log(`WARNING: Skipped ${numForceStopArchives} archives of type 'ON_FORCED_STOP' that were generated when the server exited ungracefully`);
+  }
+  if (restorableArchives.length > 0) {
+    await restoreLocalBackup(restorableArchives[0]);
+  }  else {
+    console.log(`No backups found - leaving 'worlds' folder as is`);
+  }
 }
 
 async function restoreLocalBackup(backupArchiveName) {
@@ -162,7 +182,7 @@ async function restoreLocalBackup(backupArchiveName) {
         path: SERVER_WORLDS_FOLDER_PATH
       })
     );
-    console.log(`Successfully backed up state of server using ${backupArchivePath}`)
+    console.log(`Successfully restored backup ${backupArchivePath}`)
     return true;
   }
 }
@@ -183,6 +203,7 @@ function getBackupsToPurge(backupFileNameList, maxToKeep) {
 };
 
 async function purgeOldLocalBackups() {
+  fs.ensureDirSync(BACKUP_FOLDER_PATH);
   const allArchives = await fs.readdir(BACKUP_FOLDER_PATH);
   await Promise.all(Object.keys(BACKUP_TYPES).map(async (backupType) => {
     const maxBackupTypes = localBackupKeepCount[backupType];
@@ -262,6 +283,7 @@ function getRemoteBackupsToDownload(allRemoteBackups, allLocalBackups) {
 
 async function downloadRemoteBackups() {
   console.log('Downloading remote backups from AWS S3...');
+  fs.ensureDirSync(BACKUP_FOLDER_PATH);
   const bucketContents = await s3.listObjects({
     Bucket: bucketName
   }).promise();

@@ -37,6 +37,7 @@
   },
   "backup": {
     "backup-frequency-minutes": 15,
+    "use-aws-s3-backup": false,
     "num-backups-to-keep-for-type": {
       "local": {
         "SCHEDULED": 15,

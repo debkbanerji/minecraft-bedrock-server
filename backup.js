@@ -2,9 +2,9 @@
 const fs = require('fs-extra');
 const assert = require('assert');
 const archiver = require('archiver');
-const unzipper = require('unzipper')
+const unzipper = require('unzipper');
+const AWS = require('aws-sdk');
 const util = require('util');
-
 const stream = require('stream');
 const pipeline = util.promisify(stream.pipeline);
 
@@ -29,11 +29,34 @@ assert(backupConfig, `Could not find field 'backup' at root of config`);
 const localBackupKeepCount = backupConfig["num-backups-to-keep-for-type"].local;
 const remoteBackupKeepCount = backupConfig["num-backups-to-keep-for-type"].remote;
 
+// AWS STUFF
+let s3 = null;
+const serverProps = config['server-properties'];
+const bucketName = `Minecraft-bedrock-backup.${serverProps['level-name']}`.toLowerCase().replace(/( |_)/g, "-").replace(/(-+)/g, "-");
+
+
+if (backupConfig["use-aws-s3-backup"]) {
+  s3 = new AWS.S3({
+    apiVersion: '2006-03-01'
+  });
+} else {
+  console.log(`!!!!!!!!!!\nconfig["backup"]["num-backups-to-keep-for-type"] set to false - if you want to use AWS S3 backups, set this to true and see https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html for instruction on how to define your AWS credentials\n!!!!!!!!!!\n`);
+}
+
+async function createBackupBucketIfNotExists() {
+  if (s3) {
+    await s3.createBucket({
+      Bucket: bucketName
+    }).promise();
+  }
+}
+
 async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, backupType) {
   assert(backupType, `Undefined backup type`);
   fs.ensureDirSync(BACKUP_FOLDER_PATH);
   const archive = archiver('zip');
-  const outputArchiveStream = fs.createWriteStream(`${BACKUP_FOLDER_PATH}/${backupStartTime}_${backupType}.zip`);
+  const outputArchiveFileName = `${backupStartTime}_${backupType}.zip`;
+  const outputArchiveStream = fs.createWriteStream(`${BACKUP_FOLDER_PATH}/${outputArchiveFileName}`);
   archive.pipe(outputArchiveStream);
   await Promise.all(Object.keys(fileToCopyLength).map(async (fileName) => {
     const contentLength = fileToCopyLength[fileName];
@@ -57,6 +80,12 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
   }));
   archive.finalize();
   await new Promise(fulfill => outputArchiveStream.on("close", fulfill));
+
+
+  if (s3) {
+    await pushBackupToRemote(outputArchiveFileName);
+  }
+
   // purge old backups now since we may have too many
   try {
     await purgeOldLocalBackups();
@@ -165,7 +194,32 @@ async function purgeOldLocalBackups() {
   }));
 }
 
+async function purgeOldRemoteBackups() {
+  await Promise.all(Object.keys(BACKUP_TYPES).map(async (backupType) => {
+    const maxBackupTypes = remoteBackupKeepCount[backupType];
+    // TODO: Implement
+  }));
+}
+
+async function pushBackupToRemote(archiveName) {
+  const readStream = fs.createReadStream(`${BACKUP_FOLDER_PATH}/${archiveName}`);
+  var params = {
+    Bucket: bucketName,
+    Key: archiveName,
+    Body: readStream
+  };
+  s3.upload(params, function(err, data) {
+    console.log(err, data);
+  });
+}
+
+async function downloadRemoteBackups(archiveName) {
+  console.log('Downloading remote backups from AWS S3...');
+  // TODO: Implement
+}
+
 module.exports = {
+  createBackupBucketIfNotExists,
   createBackup,
   restoreLocalBackup,
   restoreLatestLocalBackup,

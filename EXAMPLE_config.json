@@ -36,17 +36,18 @@
     "correct-player-movement": false
   },
   "backup": {
-    "backup-frequency-minutes": 15,
+    "backup-frequency-minutes": 20,
+    "use-aws-s3-backup": false,
     "num-backups-to-keep-for-type": {
       "local": {
-        "SCHEDULED": 15,
+        "SCHEDULED": 20,
         "MANUAL": -1,
-        "ON_STOP": 20,
+        "ON_STOP": 30,
         "ON_FORCED_STOP": -1
       },
       "remote": {
         "SCHEDULED": 15,
-        "MANUAL": -1,
+        "MANUAL": 30,
         "ON_STOP": 20,
         "ON_FORCED_STOP": 15
       }

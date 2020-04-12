@@ -72,7 +72,7 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
 
     const source = `${SERVER_WORLDS_FOLDER_PATH}/${fileName}`;
     const readStream = fs.createReadStream(source, {
-      end: contentLength - 1
+      end: contentLength > 0 ? contentLength - 1 : 0;
     });
     archive.append(readStream, {
       name: fileName

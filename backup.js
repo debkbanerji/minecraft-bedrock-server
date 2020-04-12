@@ -33,6 +33,9 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
     if (!(await fs.pathExists(`${SERVER_WORLDS_FOLDER_PATH}/${fileName}`))) {
       fileName = fileName.replace('/', '/db/');
     }
+    if (!(await fs.pathExists(`${SERVER_WORLDS_FOLDER_PATH}/db/${fileName}`))) {
+      fileName = fileName.replace('/db/', '/db/lost/');
+    }
 
     const source = `${SERVER_WORLDS_FOLDER_PATH}/${fileName}`;
     const readStream = fs.createReadStream(source, {

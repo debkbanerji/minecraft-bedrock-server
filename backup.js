@@ -140,6 +140,7 @@ async function restoreLatestLocalBackup() {
   fs.ensureDirSync(BACKUP_FOLDER_PATH);
   const backupFiles = await fs.readdir(BACKUP_FOLDER_PATH);
   // TODO: Restore and test
+  console.log('TODO: IMPLEMENT')
 }
 
 async function restoreLocalBackup(backupArchiveName) {
@@ -199,7 +200,7 @@ async function purgeOldRemoteBackups() {
   const bucketContents = await s3.listObjects({
     Bucket: bucketName
   }).promise();
-  const allArchives = bucketContents.Contents.map(entry=>entry.Key);
+  const allArchives = bucketContents.Contents.map(entry => entry.Key);
   await Promise.all(Object.keys(BACKUP_TYPES).map(async (backupType) => {
     const maxBackupTypes = remoteBackupKeepCount[backupType];
     const backupsToPurge = getBackupsToPurge(allArchives.filter(
@@ -234,22 +235,48 @@ const pushBackupToRemote = util.promisify((archiveName, callback) => {
 });
 
 function getRemoteBackupsToDownload(allRemoteBackups, allLocalBackups) {
-  const lists = Object.keys(BACKUP_TYPES).map(async (backupType) => {
+  const lists = Object.keys(BACKUP_TYPES).map((backupType) => {
     const maxBackupTypes = remoteBackupKeepCount[backupType];
-    // TODO: Implement
+    const localBackups = allLocalBackups.filter(
+      fileName => fileName.includes(backupType)
+    );
+    const remoteBackups = allRemoteBackups.filter(
+      fileName => fileName.includes(backupType)
+    );
+    let allBackupsOfType = localBackups.concat(remoteBackups);
+    allBackupsOfType = [...new Set(allBackupsOfType)]; // remove duplicates
+    allBackupsOfType.sort((name1, name2) => {
+      const ts1Match = name1.match(/\d*/);
+      const ts2Match = name2.match(/\d*/);
+      const ts1 = parseInt(ts1Match[0]);
+      const ts2 = parseInt(ts2Match[0]);
+      return ts2 - ts1;
+    });
+    const slicedBackupsOfType = allBackupsOfType.slice(0, maxBackupTypes);
+    const backupsToDownload = slicedBackupsOfType.filter((backup) => !localBackups.includes(backup));
+    return backupsToDownload;
   });
   const merged = [].concat.apply([], lists);
-  return lists;
+  console.log('MERGED:')
+  console.log(merged)
+  return merged;
 }
 
-async function downloadRemoteBackups(archiveName) {
+async function downloadRemoteBackups() {
   console.log('Downloading remote backups from AWS S3...');
-  // TODO: Implement
+  const bucketContents = await s3.listObjects({
+    Bucket: bucketName
+  }).promise();
+  const allRemoteArchives = bucketContents.Contents.map(entry => entry.Key);
+  const allLocalArchives = await fs.readdir(BACKUP_FOLDER_PATH);
+  const remoteBackupsToDownload = getRemoteBackupsToDownload(allRemoteArchives, allLocalArchives);
+  // TODO: Download
   await purgeOldLocalBackups();
 }
 
 module.exports = {
   createBackupBucketIfNotExists,
+  downloadRemoteBackups,
   createBackup,
   restoreLocalBackup,
   restoreLatestLocalBackup,

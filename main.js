@@ -30,6 +30,7 @@ const {
 } = require('./create-server-properties.js');
 const {
   createBackupBucketIfNotExists,
+  downloadRemoteBackups,
   createBackup,
   restoreLocalBackup,
   restoreLatestLocalBackup,
@@ -61,6 +62,7 @@ downloadServerIfNotExists(platform).then(() => {
   createServerProperties().then(async () => {
     console.log('\nRestoring latest local backup...');
     await createBackupBucketIfNotExists();
+    await downloadRemoteBackups();
     await restoreLatestLocalBackup();
 
     console.log('\nStarting Minecraft Bedrock server...\n');

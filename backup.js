@@ -20,6 +20,15 @@ const {
   platform
 } = require('./utils.js');
 
+
+const configFile = fs.readFileSync(CONFIG_FILE_PATH, 'utf8');
+const config = JSON.parse(configFile);
+const backupConfig = config.backup;
+assert(backupConfig, `Could not find field 'backup' at root of config`);
+// too lazy for more error handling :/
+const localBackupKeepCount = backupConfig["num-backups-to-keep-for-type"].local;
+const remoteBackupKeepCount = backupConfig["num-backups-to-keep-for-type"].remote;
+
 async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, backupType) {
   assert(backupType, `Undefined backup type`);
   fs.ensureDirSync(BACKUP_FOLDER_PATH);
@@ -48,6 +57,12 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
   }));
   archive.finalize();
   await new Promise(fulfill => outputArchiveStream.on("close", fulfill));
+  // purge old backups now since we may have too many
+  try {
+    await purgeOldLocalBackups();
+  } catch (e) {
+    console.error(e);
+  }
   console.log(`Finished creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}\n`);
 };
 
@@ -86,7 +101,7 @@ async function createUnscheduledBackup(backupStartTime) {
   filePaths.forEach(path => {
     fileToCopyLength[path] = Infinity;
   });
-  await _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, BACKUP_TYPES.FORCED_STOP);
+  await _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, BACKUP_TYPES.ON_FORCED_STOP);
   console.log(`\nPlease check the state of the server and make sure the latest backup is a valid one before continued use (use force-restore <BACKUP_FILE_NAME> if necessary)`);
   console.log(`\nIn the future, please use the 'stop' command to kill the server`);
 }
@@ -119,6 +134,35 @@ async function restoreLocalBackup(backupArchiveName) {
     console.log(`Successfully backed up state of server using ${backupArchivePath}`)
     return true;
   }
+}
+
+function getBackupsToPurge(backupFileNameList, maxToKeep) {
+  backupFileNameList.sort((name1, name2) => {
+    const ts1Match = name1.match(/\d*/);
+    const ts2Match = name2.match(/\d*/);
+    const ts1 = parseInt(ts1Match[0]);
+    const ts2 = parseInt(ts2Match[0]);
+    return ts2 - ts1;
+  });
+  if (maxToKeep != null && maxToKeep > -1) {
+    return backupFileNameList.slice(maxToKeep);
+  } else {
+    return [];
+  }
+};
+
+async function purgeOldLocalBackups() {
+  await Promise.all(Object.keys(BACKUP_TYPES).map(async (backupType) => {
+    const maxBackupTypes = localBackupKeepCount[backupType];
+    const allArchives = await fs.readdir(BACKUP_FOLDER_PATH);
+    const backupsToPurge = getBackupsToPurge(allArchives.filter(
+      fileName => fileName.includes(backupType)
+    ), maxBackupTypes);
+    backupsToPurge.forEach(async (backupToPurge) => {
+      console.log(`Removing ${backupToPurge} due to parameters defined in config["backup"]["num-backups-to-keep-for-type"]`);
+      await fs.remove(`${BACKUP_FOLDER_PATH}/${backupToPurge}`);
+    })
+  }));
 }
 
 module.exports = {

@@ -49,9 +49,8 @@ const platform = os.platform();
 const BACKUP_TYPES = Object.freeze({
   'SCHEDULED': 'SCHEDULED',
   'MANUAL': 'MANUAL',
-  'ON_START': 'ON_START',
   'ON_STOP': 'ON_STOP',
-  'FORCED_STOP':'FORCED_STOP'
+  'ON_FORCED_STOP':'ON_FORCED_STOP'
 });
 const BACKUP_TYPE_REGEX_FRAGMENT = `(${Object.keys(BACKUP_TYPES).join('|')})`;
 

@@ -140,7 +140,6 @@ async function restoreLatestLocalBackup() {
   console.log('\nRestoring latest local backup...');
   fs.ensureDirSync(BACKUP_FOLDER_PATH);
   const backupFiles = await fs.readdir(BACKUP_FOLDER_PATH);
-  // TODO: Restore and test
   const allArchives = await fs.readdir(BACKUP_FOLDER_PATH);
   allArchives.sort((name1, name2) => {
     const ts1Match = name1.match(/\d*/);
@@ -152,13 +151,13 @@ async function restoreLatestLocalBackup() {
   const restorableArchives = allArchives.filter(
     fileName => !fileName.includes(BACKUP_TYPES.ON_FORCED_STOP)
   );
-  const numForceStopArchives = allArchives.length-restorableArchives.length;
-  if (numForceStopArchives>0) {
+  const numForceStopArchives = allArchives.length - restorableArchives.length;
+  if (numForceStopArchives > 0) {
     console.log(`WARNING: Skipped ${numForceStopArchives} archives of type 'ON_FORCED_STOP' that were generated when the server exited ungracefully`);
   }
   if (restorableArchives.length > 0) {
     await restoreLocalBackup(restorableArchives[0]);
-  }  else {
+  } else {
     console.log(`No backups found - leaving 'worlds' folder as is`);
   }
 }
@@ -282,24 +281,26 @@ function getRemoteBackupsToDownload(allRemoteBackups, allLocalBackups) {
 }
 
 async function downloadRemoteBackups() {
-  console.log('Downloading remote backups from AWS S3...');
-  fs.ensureDirSync(BACKUP_FOLDER_PATH);
-  const bucketContents = await s3.listObjects({
-    Bucket: bucketName
-  }).promise();
-  const allRemoteArchives = bucketContents.Contents.map(entry => entry.Key);
-  const allLocalArchives = await fs.readdir(BACKUP_FOLDER_PATH);
-  const remoteBackupsToDownload = getRemoteBackupsToDownload(allRemoteArchives, allLocalArchives);
-  await Promise.all(remoteBackupsToDownload.map(async (backup) => {
-    const response = await s3.getObject({
-      Bucket: bucketName,
-      Key: backup
+  if (s3) {
+    console.log('Downloading remote backups from AWS S3...');
+    fs.ensureDirSync(BACKUP_FOLDER_PATH);
+    const bucketContents = await s3.listObjects({
+      Bucket: bucketName
     }).promise();
-    await fs.outputFile(`${BACKUP_FOLDER_PATH}/${backup}`, response.Body);
-    console.log(`Downloaded ${backup}`);
-  }));
-  console.log(`Downloaded ${remoteBackupsToDownload.length} backup(s) from from AWS S3 bucket ${bucketName}`)
-  await purgeOldLocalBackups();
+    const allRemoteArchives = bucketContents.Contents.map(entry => entry.Key);
+    const allLocalArchives = await fs.readdir(BACKUP_FOLDER_PATH);
+    const remoteBackupsToDownload = getRemoteBackupsToDownload(allRemoteArchives, allLocalArchives);
+    await Promise.all(remoteBackupsToDownload.map(async (backup) => {
+      const response = await s3.getObject({
+        Bucket: bucketName,
+        Key: backup
+      }).promise();
+      await fs.outputFile(`${BACKUP_FOLDER_PATH}/${backup}`, response.Body);
+      console.log(`Downloaded ${backup}`);
+    }));
+    console.log(`Downloaded ${remoteBackupsToDownload.length} backup(s) from from AWS S3 bucket ${bucketName}`)
+    await purgeOldLocalBackups();
+  }
 }
 
 module.exports = {

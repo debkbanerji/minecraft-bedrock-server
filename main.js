@@ -64,11 +64,16 @@ downloadServerIfNotExists(platform).then(() => {
     console.log(`!!!!!!!!!!\nWARNING: Use the 'stop' command to stop the server gracefully, or you may lose non backed up up data\n!!!!!!!!!!\n`);
 
     let bs = null;
-    if (platform === 'linux') {
+
+    const spawnServer = () => {
       bs = spawn('./bedrock_server', [], {
         stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
         cwd: UNZIPPED_SERVER_FOLDER_PATH
       });
+    }
+
+    if (platform === 'linux') {
+      spawnServer();
     } else if (platform === 'win32') {
       bs = spawn(`${UNZIPPED_SERVER_FOLDER_NAME}/bedrock_server.exe`, [], {
         stdio: ['pipe', 'pipe', 'pipe', 'ipc']

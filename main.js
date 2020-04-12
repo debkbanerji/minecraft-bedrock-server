@@ -143,7 +143,7 @@ downloadServerIfNotExists(platform).then(() => {
         triggerBackup(BACKUP_TYPES.MANUAL);
       } else {
         console.log(`Unrecognized command: ${line}`);
-        console.log('Recognized commands: backup,stop')
+        console.log('Recognized commands: backup, stop')
         // TODO: figure out how to pipe this to the server
       }
     })

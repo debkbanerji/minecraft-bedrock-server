@@ -1,6 +1,7 @@
 // Downloads the server code from Microsoft
 const fs = require('fs-extra');
 const assert = require('assert');
+const archiver = require('archiver');
 const unzipper = require('unzipper')
 const util = require('util');
 
@@ -20,9 +21,11 @@ const {
 
 async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTime, backupType) {
   assert(backupType, `Undefined backup type`);
-  const backupDirPath = `${BACKUP_FOLDER_PATH}/${backupStartTime}_${backupType}`;
-  fs.ensureDirSync(backupDirPath);
-  const copyPromises = Object.keys(fileToCopyLength).map(async (fileName) => {
+  fs.ensureDirSync(BACKUP_FOLDER_PATH);
+  const archive = archiver('zip');
+  const outputArchiveStream = fs.createWriteStream(`${BACKUP_FOLDER_PATH}/${backupStartTime}_${backupType}.zip`);
+  archive.pipe(outputArchiveStream);
+  await Promise.all(Object.keys(fileToCopyLength).map(async (fileName) => {
     const contentLength = fileToCopyLength[fileName];
 
     // Sadly, the 'save query command' doesn't give us the correct path for all
@@ -32,18 +35,16 @@ async function _createBackupFromFileToCopyLength(fileToCopyLength, backupStartTi
     }
 
     const source = `${SERVER_WORLDS_FOLDER_PATH}/${fileName}`;
-    const destination = `${backupDirPath}/${fileName}`;
-    await fs.ensureFile(destination);
-    await pipeline(
-      fs.createReadStream(source, {
-        end: contentLength - 1
-      }),
-      fs.createWriteStream(destination),
-    );
-  });
-  await Promise.all(copyPromises);
+    const readStream = fs.createReadStream(source, {
+      end: contentLength - 1
+    });
+    archive.append(readStream, {
+      name: fileName
+    });
+  }));
+  archive.finalize();
+  await new Promise(fulfill => outputArchiveStream.on("close", fulfill));
   console.log(`Finished creating backup of server state at ${new Date(backupStartTime*MS_IN_SEC).toLocaleString()} with type ${backupType}\n`);
-  return;
 };
 
 async function createBackup(backupFileListString, backupStartTime, backupType) {

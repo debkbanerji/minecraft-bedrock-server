@@ -60,9 +60,9 @@ let currentBackupType = null;
 
 downloadServerIfNotExists(platform).then(() => {
   createServerProperties().then(async () => {
-    console.log('\nRestoring latest local backup...');
     await createBackupBucketIfNotExists();
     await downloadRemoteBackups();
+    console.log('\nRestoring latest local backup...');
     await restoreLatestLocalBackup();
 
     console.log('\nStarting Minecraft Bedrock server...\n');
@@ -151,6 +151,7 @@ downloadServerIfNotExists(platform).then(() => {
     }
 
     process.on('SIGINT', async () => {
+      bs = null;
       await createUnscheduledBackup(Math.floor(new Date() / 1000));
       process.exit(1);
     });

@@ -257,8 +257,6 @@ function getRemoteBackupsToDownload(allRemoteBackups, allLocalBackups) {
     return backupsToDownload;
   });
   const merged = [].concat.apply([], lists);
-  console.log('MERGED:')
-  console.log(merged)
   return merged;
 }
 
@@ -270,7 +268,15 @@ async function downloadRemoteBackups() {
   const allRemoteArchives = bucketContents.Contents.map(entry => entry.Key);
   const allLocalArchives = await fs.readdir(BACKUP_FOLDER_PATH);
   const remoteBackupsToDownload = getRemoteBackupsToDownload(allRemoteArchives, allLocalArchives);
-  // TODO: Download
+  await Promise.all(remoteBackupsToDownload.map(async (backup) => {
+    const response = await s3.getObject({
+      Bucket: bucketName,
+      Key: backup
+    }).promise();
+    await fs.outputFile(`${BACKUP_FOLDER_PATH}/${backup}`, response.Body);
+    console.log(`Downloaded ${backup}`);
+  }));
+  console.log(`Downloaded ${remoteBackupsToDownload.length} backup(s) from from AWS S3 bucket ${bucketName}`)
   await purgeOldLocalBackups();
 }
 

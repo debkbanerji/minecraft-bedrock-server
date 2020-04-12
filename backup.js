@@ -80,7 +80,7 @@ function getFilePathsSync(dir, files_) {
 async function createUnscheduledBackup(backupStartTime) {
   // blindly tries to create a backup of everything in the current worlds folder
   // without the file and position list provided by 'save query'
-  console.log('!!!!!!!!!!!\n\nRECEIVED SIGINT! - creating a sketchy ad hoc backup of server state...');
+  console.log('!!!!!!!!!!!\n\nRUNNING BACKUP DUE TO A FORCED STOP - creating a sketchy ad hoc backup of server state...');
   const filePaths = getFilePathsSync(SERVER_WORLDS_FOLDER_PATH).map(filePath => filePath.replace(`${SERVER_WORLDS_FOLDER_PATH}/`, ''));
   const fileToCopyLength = {};
   filePaths.forEach(path => {

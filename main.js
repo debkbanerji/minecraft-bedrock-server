@@ -165,6 +165,7 @@ downloadServerIfNotExists(platform).then(() => {
           bs.stdin.write('stop\r\n');
           bs = null;
           setTimeout(async () => {
+            await createUnscheduledBackup(Math.floor(new Date() / 1000));
             const didSuccessfulyRestore = await restoreLocalBackup(lineSplit[1]);
             if (!didSuccessfulyRestore) {
               console.log('Unable to restore backup - restarting server as is');

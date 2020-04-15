@@ -1,6 +1,7 @@
 ![Minecraft Logo](https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/header/logo.png)
 
 # Minecraft Bedrock Edition Server
+Made with ❤️ by Deb
 
 ## What is it?
 

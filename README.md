@@ -24,7 +24,14 @@ This server software is not designed to support dozens upon dozens of users, or 
 ## Getting Started
 
 ### System requirements
-TODO: Write
+- A computer running [Ubuntu 18.04](http://releases.ubuntu.com/18.04.4/) or later
+  - An operating system which is based on Ubuntu 18.04 (such as [Linux Mint 19.3](https://www.linuxmint.com/download.php)) also works
+- You'll need to install [Node.js](https://nodejs.org/en/download/) on this computer
+  - You'll also need npm, which should be installed alongside Node.js if you install it using defaults ettings
+  - The earliest version of Node.js that I tested with was version 12.16.2
+- You'll need to be able to access and enable port forwarding on your router if you want friends to join
+  - I'll link a tutorial for this further down
+- Finally, everyone who wants to join the server (even you) will need Minecraft Bedrock Edition and a Microsoft account to login and play online
 
 ### Reading Minecraft's EULA
 TODO: Write
@@ -45,6 +52,9 @@ TODO: Write
 TODO: Write
 
 #### Port forwarding
+TODO: Write
+
+#### Linking a domain (optional)
 TODO: Write
 
 #### Connecting from Windows 10

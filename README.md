@@ -1,12 +1,14 @@
 ![Minecraft Multiplayer Banner](https://www.minecraft.net/content/dam/games/minecraft/key-art/playtheway-minecraft.png.transform/minecraft-image-large/image.png)
-Image Credit: [Mojang](https://www.minecraft.net/en-us/about-minecraft)
+Credit for all images and base server code: [Mojang](https://www.minecraft.net/en-us/about-minecraft)
 
 # Minecraft Bedrock Edition Server
 Made with ❤️ by Deb
 
 ## What is it?
 
-This is a smart and easy to use wrapper around the [Minecraft Bedrock Edition server](https://www.minecraft.net/en-us/download/server/bedrock/) that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals. Note that the server software that this wraps is, as of the time of writing, currently in alpha.
+This is a smart and relatively easy to use wrapper around the [Minecraft Bedrock Edition server](https://www.minecraft.net/en-us/download/server/bedrock/) that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals. Note that the server software that this wraps is, as of the time of writing, currently in alpha.
+
+![2 Players](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-survive.png)
 
 ### Bedrock Edition vs. Java Edition
 This is a Minecraft Bedrock Edition server, so it is designed to be connected to using the cross platform compatible Windows 10, Nintendo Switch, Xbox One, and Pocket editions of Minecraft, with a little luck. Though connecting to arbitrary servers (such as those set up using this software) from editions that are not the Windows 10 edition is not officially supported, there is a workaround that I tested that worked pretty well on Nintendo Switch, and which should(?) also work for other versions. (see the **Connecting from not Windows 10** section for info on how to do this)
@@ -24,6 +26,7 @@ I've been playing with my friends, and this works great with our (relatively) sm
 This server software is not designed to support dozens upon dozens of users, or for worlds whose sizes may expand to the order of gigabytes, since depending on your network connection, periodic backups may not work as well with large world sizes, even if your system's hardware can keep up. Furthermore, it has been written to be as easy as possible to get up and running and so does not have support for more advanced server features. Finally, Mojang's publicly released server software is (as of the time of writing) still in beta, and therefore is inherently more prone to bugs. You can try, and there's a good chance it would work, given that it is running on a machine with sufficient hardware and network bandwith, but do not be surprised if it does not.
 
 ## Getting Started
+![Getting Started](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-beresourceful.png)
 
 ### System requirements
 - A computer running [Ubuntu 18.04](http://releases.ubuntu.com/18.04.4/) or later
@@ -73,7 +76,9 @@ TODO: Write
 #### Connecting from not Windows 10
 TODO: Write
 
-## Understanding the backup system
+## The backup system
+![Redstone](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-buildsomething.png)
+
 TODO: Write
 
 ## Known issues

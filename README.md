@@ -19,7 +19,7 @@ If you're tech savvy enough, you could probably deploy this Node app to the clou
 I've been playing with my friends, and this works great with our (relatively) small world sizes, giving us peace of mind since it periodically backs up our world in case we run into bugs in Mojang's alpha server software.
 
 ### Who it's not for
-This server software is not designed to support dozens upon dozens, or hundreds of users, or for worlds whose sizes may expand to the order of gigabytes, since periodic backups may not work as well with large world sizes, even if your system's hardware can keep up. Furthermore, it has been written to be as easy as possible to get up and running and so does not have support for more advanced server features. Furthermore, Mojang's publicly released server software is (as of the time of writing) still in beta, and therefore is inherently more prone to bugs.
+This server software is not designed to support dozens upon dozens of users, or for worlds whose sizes may expand to the order of gigabytes, since periodic backups may not work as well with large world sizes, even if your system's hardware can keep up. Furthermore, it has been written to be as easy as possible to get up and running and so does not have support for more advanced server features. Furthermore, Mojang's publicly released server software is (as of the time of writing) still in beta, and therefore is inherently more prone to bugs. You can try, and there's a good chance it would work, given that it is running on a machine with sufficient hardware and network bandwith, but do not be surprise if it does not.
 
 ## Getting Started
 

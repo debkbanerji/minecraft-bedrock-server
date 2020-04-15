@@ -4,7 +4,7 @@
 
 A smart wrapper around the Minecraft Bedrock Edition server that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals.
 
-## How it works
+## What is it?
 
 ### Bedrock Edition vs. Java Edition
 TODO: Write

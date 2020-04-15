@@ -42,7 +42,7 @@ This server software is not designed to support dozens upon dozens of users, or 
 
 #### Optional Requirements
 These aren't really necessary, but make things much nicer
-- A domain that your friends can connect to (I created a subdomain on a domain I already owned)
+- A domain that your friends can connect to (I created a subdomain on a domain I already owned) so you don't have to have your IP address floating around in people's inboxes
 - An [Amazon Web Services](https://aws.amazon.com/) account so the server can automatically store backups to [Amazon S3](https://aws.amazon.com/s3/)
 
 ### Reading Minecraft's EULA

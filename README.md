@@ -41,6 +41,9 @@ TODO: Write
 #### Connecting from not Windows 10
 TODO: Write
 
+## Understanding the Backup System
+TODO: Write
+
 ## Known Issues
 TODO: Write
 

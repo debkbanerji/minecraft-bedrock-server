@@ -1,6 +1,6 @@
-# Minecraft Bedrock Edition Node.js Server
-
 ![Minecraft Logo](https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/header/logo.png)
+
+# Minecraft Bedrock Edition Server
 
 A smart wrapper around the Minecraft Bedrock Edition server that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals.
 

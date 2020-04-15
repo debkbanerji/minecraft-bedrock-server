@@ -27,12 +27,18 @@ This server software is not designed to support dozens upon dozens of users, or 
 ### System requirements
 - A computer running [Ubuntu 18.04](http://releases.ubuntu.com/18.04.4/) or later
   - An operating system which is based on Ubuntu 18.04 (such as [Linux Mint 19.3](https://www.linuxmint.com/download.php)) also works
+  - Mojang also has a Windows 10 version of the alpha server software, but as of the time of writing, running this software on Windows 10 is not supported due to broken backup functionality in the Windows 10 version of Mojang's software
 - You'll need to install [Node.js](https://nodejs.org/en/download/) on this computer
-  - You'll also need npm, which should be installed alongside Node.js if you install it using defaults ettings
+  - You'll also need npm, which should be installed alongside Node.js if you install it using default settings
   - The earliest version of Node.js that I tested with was version 12.16.2
 - You'll need to be able to access and enable port forwarding on your router if you want friends to join
   - I'll link a tutorial for this further down
 - Finally, everyone who wants to join the server (even you) will need Minecraft Bedrock Edition and a Microsoft account to login and play online
+
+#### Optional Requirements
+These aren't really necessary, but make things much nicer
+- A domain that your friends can connect to (I created a subdomain on a domain I already owned)
+- An [Amazon Web Services](https://aws.amazon.com/) account so the server can automatically store backups to [Amazon S3](https://aws.amazon.com/s3/)
 
 ### Reading Minecraft's EULA
 TODO: Write

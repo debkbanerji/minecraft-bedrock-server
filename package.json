@@ -1,7 +1,7 @@
 {
   "name": "minecraft-bedrock-node",
-  "version": "2020.4.3",
-  "description": "Node wrapper for Minecraft Bedrock server",
+  "version": "2020.4.15",
+  "description": "Easy to use Minecraft Bedrock Server with automatic cloud backups",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

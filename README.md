@@ -2,9 +2,9 @@
 
 # Minecraft Bedrock Edition Server
 
-A smart wrapper around the Minecraft Bedrock Edition server that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals.
-
 ## What is it?
+
+This is a smart wrapper around the [Minecraft Bedrock Edition server](https://www.minecraft.net/en-us/download/server/bedrock/) that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals. Note that the server software that this wraps is, as of the time of writing, currently in alpha.
 
 ### Bedrock Edition vs. Java Edition
 This is a Minecraft Bedrock Edition server, so it is designed to be connected to using the cross platform compatible Windows 10, Nintendo Switch, Xbox One, and Pocket editions of Minecraft, with a little luck. Though connecting to arbitrary servers (such as those set up using this software) from editions that are not the Windows 10 edition is not officially supported on platforms that are not Windows, there is a workaround that I tested that worked pretty well on Nintendo Switch, and which should(?) also work for other versions. (see the 'Connecting from not Windows 10' section for info on how to do this)

@@ -29,9 +29,10 @@ This server software is not designed to support dozens upon dozens of users, or 
 ![Getting Started](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-beresourceful.png)
 
 ### System requirements
-- A computer running [Ubuntu 18.04](http://releases.ubuntu.com/18.04.4/) or later
+- A computer with internet access running [Ubuntu 18.04](http://releases.ubuntu.com/18.04.4/) or later
   - An operating system which is based on Ubuntu 18.04 (such as [Linux Mint 19.3](https://www.linuxmint.com/download.php)) also works
   - Mojang also has a Windows 10 version of the alpha server software, but as of the time of writing, running this software on Windows 10 is not supported due to broken backup functionality in the Windows 10 version of Mojang's software
+  - There are, as of yet, no hard guidelines on the specs you'll need, but most basic modern computers should be able to support at least 3-4 concurrent players. Don't quote me on this, though; Googling around is probably the way to go if you're worried about system requirements.
 - You'll need to install [Node.js](https://nodejs.org/en/download/) on this computer
   - You'll also need npm, which should be installed alongside Node.js if you install it using default settings
   - The earliest version of Node.js that I tested with was version 12.16.2

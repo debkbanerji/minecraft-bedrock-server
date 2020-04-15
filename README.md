@@ -46,7 +46,7 @@ TODO: Write
 ### Config file
 TODO: Write
 
-### AWS cloud backups (optional)
+### Amazon S3 cloud backups (optional)
 TODO: Write
 
 ### Starting the server

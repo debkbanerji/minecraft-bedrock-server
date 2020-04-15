@@ -12,27 +12,30 @@ TODO: Write
 ### Who it's for
 TODO: Write
 
+### Who it's not for
+TODO: Write
+
 ## Getting Started
 
-### System Requirements
+### System requirements
 TODO: Write
 
-### Config File
+### Config file
 TODO: Write
 
-### AWS Cloud Backups (Optional)
+### AWS cloud backups (optional)
 TODO: Write
 
-### Starting the Server
+### Starting the server
 TODO: Write
 
-#### Server Commands
+#### Server commands
 TODO: Write
 
-### Connecting to the Server
+### Connecting to the server
 TODO: Write
 
-#### Port Forwarding
+#### Port forwarding
 TODO: Write
 
 #### Connecting from Windows 10
@@ -41,10 +44,10 @@ TODO: Write
 #### Connecting from not Windows 10
 TODO: Write
 
-## Understanding the Backup System
+## Understanding the backup system
 TODO: Write
 
-## Known Issues
+## Known issues
 TODO: Write
 
 ## Disclaimer

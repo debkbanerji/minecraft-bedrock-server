@@ -71,6 +71,9 @@ If you want your backups to also be stored remotely, you'll need to setup the AW
 ### Starting the server
 TODO: Write
 
+### Stopping the server
+TODO: Write
+
 ### Connecting to the server
 TODO: Write
 

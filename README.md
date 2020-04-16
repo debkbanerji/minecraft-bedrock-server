@@ -57,14 +57,14 @@ Rename the `EXAMPLE_config.json` file to `config.json` and delete the comment li
 | ----------- | ----------- |
 | `accept-official-minecraft-server-eula` | Whether or not you agree to the official Minecraft [End User License Agreement and Privacy Policy](https://www.minecraft.net/en-us/download/server/bedrock/). **You must agree by setting this to true in order to run this software** |
 | `server-properties` | These are the base properties that define server behavior. Most should be self explanatory, but you can find more detailed descriptions [here](https://minecraft.gamepedia.com/Server.properties#Bedrock_Edition_3). **Be careful about changing the server and level names after you've run the server, since this may mess up how the server locates backups** |
-|`backup`|See the **The backup system** section further down this page for more details on how this works|
+|`backup`|See the **The Backup System** section further down this page for more details on how this works|
 
 ### Amazon S3 cloud backups (optional)
 If you want your backups to also be stored remotely, you'll need to setup the AWS connection:
 1. Sign up for an [Amazon Web Services](https://aws.amazon.com/) account, and make sure you can access the [Amazon S3](https://aws.amazon.com/s3/) console.
 2. Set up your AWS credentials in `~/.aws/credentials` using the first step of [this guide](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html). It is highly recommended that you create an IAM user with access to only S3.
 3. Set `use-aws-s3-backup` under the `backup` field of the `config.json` file to true.
-4. Read the **The backup system** section further down this page for more details on how the backup logic works. This is highly recommended if you're using Amazon S3 backups since tweaking the settings described there will affect the way your S3 storage is used.
+4. Read the **The Backup System** section further down this page for more details on how the backup logic works. This is highly recommended if you're using Amazon S3 backups since tweaking the settings described there will affect the way your S3 storage is used.
 
 **Warning: Keep an eye on the sizes of the backups that are uploaded to the S3 bucket - Minecraft worlds start out pretty small, but can become quite large, so uploading and downloading backups frequently could get expensive if things get too crazy. So far, I haven't had problems with my smallish world, but you can never be too careful.**
 

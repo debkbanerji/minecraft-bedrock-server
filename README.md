@@ -97,7 +97,7 @@ Once you have your port, and the internal IP address of your machine, you need t
 Also take a note of your external IP address - Googling 'what is my ip' will give this to you. (Google gives it to you within the search results page). If you don't link a domain, you'll have to give this to your friends so they can connect to your server, so be extremely careful who you share this with.
 
 #### Linking a domain (optional)
-TODO: Write
+Once again, Google will likely give you a much more comprehensive tutorial on how to do this than I can here. My domain is connected to Cloudflare, so I used [this tutorial](https://www.youtube.com/watch?v=9xfsH7bmSFc) to link my domain, though it should help even if you don't use Cloudflare. Note that when the tuutorial says you should enter your ip address and port, you should use the external ip address you found by Googling, and the port you set in the config file.
 
 #### Connecting from Windows 10
 TODO: Write

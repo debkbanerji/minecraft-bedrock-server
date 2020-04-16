@@ -90,9 +90,11 @@ In order to properly stop the server, type in the following command:
 #### Port forwarding/IP stuff
 Take a note of the `server-port` field that you set under `server-properties` in `config.json`. This is the port that the server will listen on once you set up port forwarding, and you'll need to give this to anyone who wants to connect to it. The default value for this is 19132.
 
-First, you need to figure out what your machine's IP address within your local network is. I found mine using the `ifconfig` command in the terminal, but if that doesn't work, a little bit of Googling should help you find it. It's usually somethin like `192.168.(somethin).(something)`
+First, you need to figure out what your machine's IP address within your local network is. I found mine using the `ifconfig` command in the terminal, but if that doesn't work, a little bit of Googling should help you find it. It's usually somethin like `192.168.(something).(something)`
 
-TODO: Finish writing
+Once you have your port, and the internal IP address of your machine, you need to set up port forwarding on your router. This can vary from router to router, but shouldn't be too tricky - I recommend GOogling how to do this. You want to associate the port that your server will listen on to your machine's local ip address.
+
+Also take a note of your external IP address - Googling 'what is my ip' will give this to you. (Google gives it to you within the search results page). If you don't link a domain, you'll have to give this to your friends so they can connect to your server, so be extremely careful who you share this with.
 
 #### Linking a domain (optional)
 TODO: Write

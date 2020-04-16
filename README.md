@@ -69,10 +69,21 @@ If you want your backups to also be stored remotely, you'll need to setup the AW
 **Warning: Keep an eye on the sizes of the backups that are uploaded to the S3 bucket - Minecraft worlds start out pretty small, but can become quite large, so uploading and downloading backups frequently could get expensive if things get too crazy. So far, I haven't had problems with my smallish world, but you can never be too careful.**
 
 ### Starting the server
-TODO: Write
+Since this is a [Node.js](https://nodejs.org/) application, after you download the code, you need to run the following command from the terminal within the directory you installed it to:
+`npm install`
+
+After that, you can start the server with the following command:
+`npm start`
+
+You don't need to rerun `npm install` every time you run the server, just `npm start`
 
 ### Stopping the server
-TODO: Write
+**DO NOT use Ctrl+C/termination/kill commands to stop the server**
+
+The server has built in protections to restore the state of your world if it is killed in a non graceful manner or something else bad happens (that's what all the backups are for), but you may lose all progress since your last save.
+
+In order to properly stop the server, type in the following command:
+`stop`
 
 ### Connecting to the server
 TODO: Write

@@ -99,11 +99,20 @@ Also take a note of your external IP address - Googling 'what is my ip' will giv
 #### Linking a domain (optional)
 Once again, Google will likely give you a much more comprehensive tutorial on how to do this than I can here. My domain is connected to Cloudflare, so I used [this tutorial](https://www.youtube.com/watch?v=9xfsH7bmSFc) to link my domain, though it should help even if you don't use Cloudflare. Note that when the tuutorial says you should enter your ip address and port, you should use the external ip address you found by Googling, and the port you set in the config file.
 
-#### Connecting from Windows 10
-TODO: Write
+#### Connecting from the Windows 10 Edition
+Connecting from the Windows 10 edition is thankfully pretty easy
 
-#### Connecting from not Windows 10
-TODO: Write
+Open Minecraft, make sure you're logged in to your Microsoft account, and navigate to the 'servers' tab. Once there, you'll need to add your server.
+
+- **Server Name**: I don't think the server name you enter matters, so enter whatever you like here
+- **Server Address**: This depends on where you're connecting from, and whether or not you've linked your server to a domain
+  - If you're on the same network as your server, enter your server's ip address (the one you found with `ifconfig`) when setting up port forwarding
+  - If you're on a different network (this is likely the case for your friends) and you don't have a linked domain, then you'll need to enter your external ip address you found through Google (having a linked domain is recommended, but if you do not have one, please be very careful about who you give out your ip to)
+  - If you're on a different network and you do have a linked domain, just enter the domain
+- **Port**: The port entered in `server-port` under the `server-properties` field of `config.json` (the default value for this is `19132`)
+
+#### Connecting from the not Windows 10 Editon
+If you're not using the Windows 10 Edition, you may still be able to connect. Try the same steps as ... TODO: Write
 
 ## The Backup System
 ![Redstone](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-buildsomething.png)

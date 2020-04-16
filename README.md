@@ -55,7 +55,7 @@ Download and unzip the code from GitHub, or clone the repository. Make sure the 
 Rename the `EXAMPLE_config.json` file to `config.json` and delete the comment lines at the top of the file. Then, change the values you want to change:
 | Value | Description |
 | ----------- | ----------- |
-| `accept-official-minecraft-server-eula` | Whether or not you agree to the official Minecraft [End User License Agreement and Privacy Policy](https://www.minecraft.net/en-us/download/server/bedrock/). **You must agree in order to run this software** |
+| `accept-official-minecraft-server-eula` | Whether or not you agree to the official Minecraft [End User License Agreement and Privacy Policy](https://www.minecraft.net/en-us/download/server/bedrock/). **You must agree by setting this to true in order to run this software** |
 | `server-properties` | These are the base properties that define server behavior. Most should be self explanatory, but you can find more detailed descriptions [here](https://minecraft.gamepedia.com/Server.properties#Bedrock_Edition_3). **Be careful about changing the server and level names after you've run the server, since this may mess up how the server locates backups** |
 |`backup`|See the **The backup system** section further down this page for more details on how this works|
 

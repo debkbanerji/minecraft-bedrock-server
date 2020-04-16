@@ -80,16 +80,19 @@ You don't need to rerun `npm install` every time you run the server, just `npm s
 ### Stopping the server
 **DO NOT use Ctrl+C/termination/kill commands to stop the server**
 
-The server has built in protections to restore the state of your world if it is killed in a non graceful manner or something else bad happens (that's what all the backups are for), but you may lose all progress since your last save.
+The server has built in protections to restore the state of your world if it is killed in a non graceful manner or something else bad happens (that's what the backups are for), but you may lose all progress since your last save.
 
 In order to properly stop the server, type in the following command:
 `stop`
 
 ### Connecting to the server
-TODO: Write
 
-#### Port forwarding
-TODO: Write
+#### Port forwarding/IP stuff
+Take a note of the `server-port` field that you set under `server-properties` in `config.json`. This is the port that the server will listen on once you set up port forwarding, and you'll need to give this to anyone who wants to connect to it. The default value for this is 19132.
+
+First, you need to figure out what your machine's IP address within your local network is. I found mine using the `ifconfig` command in the terminal, but if that doesn't work, a little bit of Googling should help you find it. It's usually somethin like `192.168.(somethin).(something)`
+
+TODO: Finish writing
 
 #### Linking a domain (optional)
 TODO: Write

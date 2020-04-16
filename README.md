@@ -4,7 +4,7 @@ Credit for all images and base server code: [Mojang](https://www.minecraft.net/e
 # Minecraft Bedrock Edition Server
 Made with ❤️ by Deb
 
-## What is it?
+## What Is It?
 
 This is a smart and relatively easy to use wrapper around the [Minecraft Bedrock Edition server](https://www.minecraft.net/en-us/download/server/bedrock/) that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals. Note that the server software that this wraps is, as of the time of writing, currently in alpha.
 
@@ -25,7 +25,7 @@ I've been playing with my friends, and this works great with our (relatively) sm
 ### Who it's not for
 This server software is not designed to support dozens upon dozens of users, or for worlds whose sizes may expand to the order of gigabytes, since depending on your network connection, periodic backups may not work as well with large world sizes, even if your system's hardware can keep up. Furthermore, it has been written to be as easy as possible to get up and running and so does not have support for more advanced server features. Finally, Mojang's publicly released server software is (as of the time of writing) still in beta, and therefore is inherently more prone to bugs. You can try, and there's a good chance it would work, given that it is running on a machine with sufficient hardware and network bandwith, but do not be surprised if it does not.
 
-## Getting Started
+## Setting It Up
 ![Getting Started](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-beresourceful.png)
 
 ### System requirements
@@ -40,7 +40,7 @@ This server software is not designed to support dozens upon dozens of users, or 
   - I'll link a tutorial for this further down
 - Finally, everyone who wants to join the server (even you) will need Minecraft Bedrock Edition and a Microsoft account to login and play online. Since no official Linux client exists for Minecraft Bedrock Edition, you won't be able to connect to the server from the same computer you're running it on, barring any virtual machine shenanigans
 
-#### Optional Requirements
+#### Optional requirements
 These aren't really necessary, but make things much nicer
 - A domain that your friends can connect to (I created a subdomain on a domain I already owned) so you don't have to have your IP address floating around in people's inboxes
 - An [Amazon Web Services](https://aws.amazon.com/) account so the server can automatically store backups to [Amazon S3](https://aws.amazon.com/s3/)
@@ -89,12 +89,12 @@ TODO: Write
 #### Connecting from not Windows 10
 TODO: Write
 
-## The backup system
+## The Backup System
 ![Redstone](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-buildsomething.png)
 
 TODO: Write
 
-## Known issues
+## Known Issues
 TODO: Write
 
 ## Disclaimer

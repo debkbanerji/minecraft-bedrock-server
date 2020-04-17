@@ -143,6 +143,8 @@ Whenever the server starts, if `use-aws-s3-backup` is set to true, the latest ba
 
 **Warning: It's a good idea to make sure your computer's time is synced and consistent so the correct backups are always retrieved and restored**
 
+If you want to restore a specific backup to the server when it is running, you can use the `force-restore <BACKUP_FILE_NAME>` command, which will create a separate backup of the current server state, gracefully stop the server, restore the backup you specified, and restart the server.
+
 ## Known issues
 ### Still in alpha
 TODO: Write

@@ -112,15 +112,19 @@ Open Minecraft, make sure you're logged in to your Microsoft account, and naviga
 - **Port**: The port entered in `server-port` under the `server-properties` field of `config.json` (the default value for this is `19132`)
 
 #### Connecting from the not Windows 10 Editon
-If you're not using the Windows 10 Edition, you may still be able to connect. Try the same steps as ... TODO: Write
+If you're not using the Windows 10 Edition, you may still be able to connect. Try the same steps as the **Connecting from the Windows 10 Edition** section, and if that doesn't work, try [this tutorial](https://www.youtube.com/watch?v=zalT_oR1nPM) to change your DNS to the BedrockConnect DNS followed by the Windows 10 connection steps again. The tutorial is designed for Switch, but following more or less the same steps should work for Xbox One if you're lucky. If not, once again, Google is your friend.
 
 ## The Backup System
 ![Redstone](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-buildsomething.png)
 
 TODO: Write
 
-## Known Issues
+## Known issues
+### Still in alpha
 TODO: Write
+### Windows incompatibilities
+TODO: Write
+### Updating the server
 
 ## Disclaimer
 TODO: Write

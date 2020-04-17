@@ -61,13 +61,13 @@ Rename the `EXAMPLE_config.json` file to `config.json` and delete the comment li
 |`backup`|See the **The Backup System** section further down this page for more details on how this works|
 
 ### Amazon S3 cloud backups (optional)
-If you want your backups to also be stored remotely, you'll need to setup the AWS connection:
+If you want your backups to also be stored remotely, you'll need to set up the AWS connection:
 1. Sign up for an [Amazon Web Services](https://aws.amazon.com/) account, and make sure you can access the [Amazon S3](https://aws.amazon.com/s3/) console.
 2. Set up your AWS credentials in `~/.aws/credentials` using the first step of [this guide](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html). It is highly recommended that you create an IAM user with access to only S3.
 3. Set `use-aws-s3-backup` under the `backup` field of the `config.json` file to true.
 4. Read the **The Backup System** section further down this page for more details on how the backup logic works. This is highly recommended if you're using Amazon S3 backups since tweaking the settings described there will affect the way your S3 storage is used.
 
-**Warning: Keep an eye on the sizes of the backups that are uploaded to the S3 bucket - Minecraft worlds start out pretty small, but can become quite large, so uploading and downloading backups frequently could get expensive if things get too crazy. So far, I haven't had problems with my smallish world, but you can never be too careful.**
+**Warning: Keep an eye on the sizes of the backups that are uploaded to the S3 bucket - Minecraft worlds start out pretty small, but can become quite large, so uploading and downloading backups frequently could get expensive if things get too crazy. So far, I haven't had problems with my smallish world, but you can never be too careful. The software can be set up to automatically purge old backups, as is described further down this guide.**
 
 ### Starting the server
 Since this is a [Node.js](https://nodejs.org/) application, after you download the code, you need to run the following command from the terminal within the directory you installed it to:
@@ -144,6 +144,10 @@ Whenever the server starts, if `use-aws-s3-backup` is set to true, the latest ba
 **Warning: It's a good idea to make sure your computer's time is synced and consistent so the correct backups are always retrieved and restored**
 
 If you want to restore a specific backup to the server when it is running, you can use the `force-restore <BACKUP_FILE_NAME>` command, which will create a separate backup of the current server state, gracefully stop the server, restore the backup you specified, and restart the server.
+
+### Automatic purging of old backups
+
+For both local, and remote backups, the software only keeps a limited number of backups, deleting the oldest ones once new ones are created. How many backups to keep is determined on a per type basis based on the values in `num-backups-to-keep-for-type`. Setting one of these values to `-1` means old backups of that type will never be deleted.
 
 ## Known issues
 ### Still in alpha

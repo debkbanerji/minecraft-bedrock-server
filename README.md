@@ -23,7 +23,7 @@ If you're tech savvy enough, you could probably deploy this Node app to the clou
 I've been playing with my friends, and this works great with our (relatively) small world sizes, giving us peace of mind since it periodically backs up our world in case we run into bugs in Mojang's alpha server software.
 
 ### Who it's not for
-This server software is not designed to support dozens upon dozens of users, or for worlds whose sizes may expand to the order of gigabytes, since depending on your network connection, periodic backups may not work as well with large world sizes, even if your system's hardware can keep up. Furthermore, it has been written to be as easy as possible to get up and running and so does not have support for more advanced server features. Finally, Mojang's publicly released server software is (as of the time of writing) still in beta, and therefore is inherently more prone to bugs. You can try, and there's a good chance it would work, given that it is running on a machine with sufficient hardware and network bandwith, but do not be surprised if it does not.
+This server software is not designed to support dozens upon dozens of users, or for worlds whose sizes may expand to the order of gigabytes, since depending on your network connection, periodic backups may not work as well with large world sizes, even if your system's hardware can keep up. Furthermore, it has been written to be as easy as possible to get up and running and so does not have support for more advanced server features. Finally, Mojang's publicly released server software is (as of the time of writing) still in alpha, and therefore is inherently more prone to bugs. You can try, and there's a good chance it would work, given that it is running on a machine with sufficient hardware and network bandwith, but do not be surprised if it does not.
 
 ## Setting It Up
 ![Getting Started](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-beresourceful.png)
@@ -56,6 +56,7 @@ Rename the `EXAMPLE_config.json` file to `config.json` and delete the comment li
 | Value | Description |
 | ----------- | ----------- |
 | `accept-official-minecraft-server-eula` | Whether or not you agree to the official Minecraft [End User License Agreement and Privacy Policy](https://www.minecraft.net/en-us/download/server/bedrock/). **You must agree by setting this to true in order to run this software** |
+|`minecraft-server-version`|The version of [Mojang's server software](https://www.minecraft.net/en-us/download/server/bedrock/) that will be downloaded and used. The default value of this is the latest version I've tested with, though you should theoretically be able to update this if you run into issues. Be careful about updating though, since Mojang may break some backwards compatiblity. If you update this and run `npm start` the software will try to download the server version you specify, though it won't delete the old version just in case.|
 | `server-properties` | These are the base properties that define server behavior. Most should be self explanatory, but you can find more detailed descriptions [here](https://minecraft.gamepedia.com/Server.properties#Bedrock_Edition_3). **Be careful about changing the server and level names after you've run the server, since this may mess up how the server locates backups** |
 |`backup`|See the **The Backup System** section further down this page for more details on how this works|
 
@@ -124,7 +125,6 @@ TODO: Write
 TODO: Write
 ### Windows incompatibilities
 TODO: Write
-### Updating the server
 
 ## Disclaimer
 TODO: Write

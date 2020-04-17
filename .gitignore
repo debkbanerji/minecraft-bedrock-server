@@ -21,8 +21,8 @@ node_modules
 package-lock.json
 
 # Raw Bedrock server code
-bedrock-server-1.14.32.1
-bedrock-server-1.14.32.1.zip
+bedrock-server-*
+bedrock-server-*.zip
 
 # Backups
 backups

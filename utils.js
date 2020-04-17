@@ -1,9 +1,10 @@
 const os = require('os');
-const pjson = require('./package.json');
 
 const CONFIG_FILE_PATH = './config.json'
+const cjson = require(CONFIG_FILE_PATH);
 
-const UNZIPPED_SERVER_FOLDER_NAME = `bedrock-server-${pjson.version}`;
+
+const UNZIPPED_SERVER_FOLDER_NAME = `bedrock-server-${cjson['minecraft-server-version']}`;
 const UNZIPPED_SERVER_FOLDER_PATH = `./${UNZIPPED_SERVER_FOLDER_NAME}`;
 const ZIPPED_SERVER_PATH = `${UNZIPPED_SERVER_FOLDER_PATH}.zip`;
 const SERVER_EXECUTABLE_PATH = `${UNZIPPED_SERVER_FOLDER_PATH}/bedrock_server`;

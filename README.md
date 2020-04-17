@@ -147,9 +147,16 @@ If you want to restore a specific backup to the server when it is running, you c
 
 ## Known issues
 ### Still in alpha
-TODO: Write
+
+Mojang's server software, which this software uses, is still in alpha, so it could be buggy. One of my motivations for writing this software was so that the automatic backups could protect me from losing information due bugs in the alpha server software. It's worked great for me and my friends so far, but as always, please be somewhat careful.
+
 ### Windows incompatibilities
-TODO: Write
+The software currently only 
+
+### Scaling issues?
+I wouldn't recommend using this server to host dozens upon dozens of clients. It might work well given the correct configuration values, hardware, and network bandwith, but I haven't done any large scale tests, so attempt this at your own peril.
 
 ## Disclaimer
-TODO: Write
+Please read the license for this repository. I am not responsible for any hardware/software/financial?/legal? problems, lost worlds, or any other issues that may arise when using this software. If you do lose information, however, I could help you if you open a GitHub issue, though once again I am not responsible for anything that may go wrong when attempting recovery.
+
+If you do find a bug, opening an issue on GitHub would be great - as I've mentioned earlier, I play with my friends on a server running this software very often, so making the experience better for me, them, and anyone else who uses it is always a win.

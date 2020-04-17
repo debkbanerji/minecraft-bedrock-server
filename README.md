@@ -91,14 +91,14 @@ In order to properly stop the server, type in the following command:
 #### Port forwarding/IP stuff
 Take a note of the `server-port` field that you set under `server-properties` in `config.json`. This is the port that the server will listen on once you set up port forwarding, and you'll need to give this to anyone who wants to connect to it. The default value for this is `19132`.
 
-First, you need to figure out what your machine's IP address within your local network is. I found mine using the `ifconfig` command in the terminal, but if that doesn't work, a little bit of Googling should help you find it. It's usually somethin like `192.168.(something).(something)`
+First, you need to figure out what your machine's IP address within your local network is. I found mine using the `ifconfig` command in the terminal, but if that doesn't work, a little bit of Googling should help you find it. It's usually something like `192.168.(something).(something)`
 
-Once you have your port, and the internal IP address of your machine, you need to set up port forwarding on your router. This can vary from router to router, but shouldn't be too tricky - I recommend GOogling how to do this. You want to associate the port that your server will listen on to your machine's local ip address.
+Once you have your port, and the internal IP address of your machine, you need to set up port forwarding on your router. This can vary from router to router, but shouldn't be too tricky - I recommend Googling how to do this. You want to associate the port that your server will listen on to your machine's local ip address.
 
 Also take a note of your external IP address - Googling 'what is my ip' will give this to you. (Google gives it to you within the search results page). If you don't link a domain, you'll have to give this to your friends so they can connect to your server, so be extremely careful who you share this with.
 
 #### Linking a domain (optional)
-Once again, Google will likely give you a much more comprehensive tutorial on how to do this than I can here. My domain is connected to Cloudflare, so I used [this tutorial](https://www.youtube.com/watch?v=9xfsH7bmSFc) to link my domain, though it should help even if you don't use Cloudflare. Note that when the tuutorial says you should enter your ip address and port, you should use the external ip address you found by Googling, and the port you set in the config file.
+Once again, Google will likely give you a much more comprehensive tutorial on how to do this than I can here. My domain is connected to Cloudflare, so I used [this tutorial](https://www.youtube.com/watch?v=9xfsH7bmSFc) to link my domain, though it should help even if you don't use Cloudflare. Note that when the tutorial says you should enter your ip address and port, you should use the external ip address you found by Googling, and the port you set in the config file.
 
 #### Connecting from the Windows 10 Edition
 Connecting from the Windows 10 edition is thankfully pretty easy
@@ -107,7 +107,7 @@ Open Minecraft, make sure you're logged in to your Microsoft account, and naviga
 
 - **Server Name**: I don't think the server name you enter matters, so enter whatever you like here
 - **Server Address**: This depends on where you're connecting from, and whether or not you've linked your server to a domain
-  - If you're on the same network as your server, enter your server's ip address (the one you found with `ifconfig`) when setting up port forwarding
+  - If you're on the same network as your server, enter your server's local ip address (the one you found with `ifconfig`) when setting up port forwarding
   - If you're on a different network (this is likely the case for your friends) and you don't have a linked domain, then you'll need to enter your external ip address you found through Google (having a linked domain is recommended, but if you do not have one, please be very careful about who you give out your ip to)
   - If you're on a different network and you do have a linked domain, just enter the domain
 - **Port**: The port entered in `server-port` under the `server-properties` field of `config.json` (the default value for this is `19132`)
@@ -128,10 +128,10 @@ There are 4 types of backups that can be created by the server:
 
 | Backup Type | Description |
 | ----------- | ----------- |
-| `SCHEDULED` | These types of backups are periodically created by the server at regular intervals, according to the value defined in `backup-frequency-minutes`. Be careful not too make this too small if your world size grows or the time it takes to create backups might increase, and scheduled backups may overlap. If you keep the default value, this is unlikely to happen unless your world is very large and/or your internet is very slow. |
+| `SCHEDULED` | These types of backups are periodically created by the server at regular intervals, according to the value defined in `backup-frequency-minutes`. Be careful not too make this too small if your world size grows or as the time it takes to create backups increases, scheduled backups may overlap. If you keep the default value, this is unlikely to happen unless your world is very large and/or your internet is very slow. |
 | `MANUAL` | Typing in the `backup` command causes one of these backups to be created. |
 |`ON_STOP`| One of these backups is created every time the server is gracefully stopped using the `stop` command |
-|`ON_FORCED_STOP`| If the server is killed ungracefully, it will try to create one of these types of backups. This is more like a 'last resort' that may also help with debugging. These backups are very sketchy and due to the nature of forced starts they could be incomplete, corrupted, or not uploaded to Amazon S3 properly. |
+|`ON_FORCED_STOP`| If the server is killed ungracefully, it will try to create one of these types of backups. This is more like a 'last resort' that may also help with debugging. These backups are very sketchy and due to the nature of forced stops they could be incomplete, corrupted, or not uploaded to Amazon S3 properly. |
 
 ### Remote Backups
 
@@ -152,10 +152,10 @@ For both local, and remote backups, the software only keeps a limited number of 
 ## Known issues
 ### Still in alpha
 
-Mojang's server software, which this software uses, is still in alpha, so it could be buggy. One of my motivations for writing this software was so that the automatic backups could protect me from losing information due bugs in the alpha server software. It's worked great for me and my friends so far, but as always, please be somewhat careful.
+Mojang's server software, which this software uses, is still in alpha, so it could be buggy. One of my motivations for writing this software was so that the automatic backups could protect me from losing information due to bugs in the alpha server software. It's worked great for me and my friends so far, but as always, please be somewhat careful.
 
 ### Windows incompatibilities
-The software currently only supports Ubuntu 18.04+ as of now, though a Windows 10 version of Mojang's server software does exist. This is because there is an issue with the last version I checked that prevents backups from being effectively created. This is kind of annoying since it means you can't run the server and connect to it from the same computer, barring virtual machines. (Minecraft Bedrock Edition is available on Windows 10 but not Ubuntu). If the backup issue is fixed, and I get the time, I will add WIndows 10 support so you don't need the extra machine and OS.
+The software currently only supports Ubuntu 18.04+ as of now, though a Windows 10 version of Mojang's server software does exist. This is because there is an issue with the last version I checked that prevents backups from being effectively created. This is kind of annoying since it means you can't run the server and connect to it from the same computer, barring virtual machines (Minecraft Bedrock Edition is available on Windows 10 but not Ubuntu). If the backup issue is fixed, and I get the time, I will add WIndows 10 support so you don't need the extra machine and OS.
 
 ### Scaling issues?
 I wouldn't recommend using this server to host dozens upon dozens of clients. It might work well given the correct configuration values, hardware, and network bandwith, but I haven't done any large scale tests, so attempt this at your own peril.

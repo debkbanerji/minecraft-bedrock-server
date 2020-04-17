@@ -118,7 +118,30 @@ If you're not using the Windows 10 Edition, you may still be able to connect. Tr
 ## The Backup System
 ![Redstone](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-buildsomething.png)
 
-TODO: Write
+The `backup` field in the `config.json` file defines how the server behaves with regard to creating backups.
+
+All backups are stored in the `backups` folder as zip files with the timestamp of the backup followed by the type of the backup. If `use-aws-s3-backup` is set to true, backups will also be synced to an Amazon S3 bucket.
+
+### Types of backups
+
+There are 4 types of backups that can be created by the server:
+
+| Backup Type | Description |
+| ----------- | ----------- |
+| `SCHEDULED` | These types of backups are periodically created by the server at regular intervals, according to the value defined in `backup-frequency-minutes`. Be careful not too make this too small if your world size grows or the time it takes to create backups might increase, and scheduled backups may overlap. If you keep the default value, this is unlikely to happen unless your world is very large and/or your internet is very slow. |
+| `MANUAL` | Typing in the `backup` command causes one of these backups to be created. |
+|`ON_STOP`| One of these backups is created every time the server is gracefully stopped using the `stop` command |
+|`ON_FORCED_STOP`| If the server is killed ungracefully, it will try to create one of these types of backups. This is more like a 'last resort' that may also help with debugging. These backups are very sketchy and due to the nature of forced starts they could be incomplete, corrupted, or not uploaded to Amazon S3 properly. |
+
+### Remote Backups
+
+Whenever a backup is created, if `use-aws-s3-backup` is set to true, the software uploads (or in the case of `ON_FORCED_STOP` backups, attempts to upload) the backup to an Amazon S3 bucket for the account you set up.
+
+### Restoring backups
+
+Whenever the server starts, if `use-aws-s3-backup` is set to true, the latest backups according to creation time will be retrieved from Amazon S3 and added to the directory of local backups. After that, the latest backup that is not of the type `ON_FORCED_STOP` will be used to replace the state of the world on the server before starting the server. (so non backed up data will be lost) If the server is always shut down correctly, then this backup will always of the type `ON_STOP`.
+
+**Warning: It's a good idea to make sure your computer's time is synced and consistent so the correct backups are always retrieved and restored**
 
 ## Known issues
 ### Still in alpha

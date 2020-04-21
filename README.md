@@ -31,7 +31,7 @@ This server software is not designed to support dozens upon dozens of users, or 
 ### System requirements
 - A computer with internet access running [Ubuntu 18.04](http://releases.ubuntu.com/18.04.4/) or later
   - An operating system which is based on Ubuntu 18.04 (such as [Linux Mint 19.3](https://www.linuxmint.com/download.php)) also works
-  - Mojang also has a Windows 10 version of the alpha server software, but as of the time of writing, running this software on Windows 10 is not supported due to broken backup functionality in the Windows 10 version of Mojang's software
+  - Mojang also has a Windows 10 version of the alpha server software, but as of the time of writing, running this software on Windows 10 is not supported due to [broken backup functionality in the Windows 10 version of Mojang's software](https://bugs.mojang.com/browse/BDS-2733)
   - There are, as of yet, no hard guidelines on the specs you'll need, but many entry level modern desktop computers should be able to support a handful of concurrent players. Don't quote me on this, though; Googling around is probably the way to go if you're worried about system requirements.
 - You'll need to install [Node.js](https://nodejs.org/en/download/) on this computer
   - You'll also need npm, which should be installed alongside Node.js if you install it using default settings
@@ -155,7 +155,7 @@ For both local, and remote backups, the software only keeps a limited number of 
 Mojang's server software, which this software uses, is still in alpha, so it could be buggy. One of my motivations for writing this software was so that the automatic backups could protect me from losing information due to bugs in the alpha server software. It's worked great for me and my friends so far, but as always, please be somewhat careful.
 
 ### Windows incompatibilities
-The software currently only supports Ubuntu 18.04+ as of now, though a Windows 10 version of Mojang's server software does exist. This is because there is an issue with the last version I checked that prevents backups from being effectively created. This is kind of annoying since it means you can't run the server and connect to it from the same computer, barring virtual machines (Minecraft Bedrock Edition is available on Windows 10 but not Ubuntu). If the backup issue is fixed, and I get the time, I will add WIndows 10 support so you don't need the extra machine and OS.
+The software currently only supports Ubuntu 18.04+ as of now, though a Windows 10 version of Mojang's server software does exist. This is because there is [an issue with the last version I checked that prevents backups from being effectively created](https://bugs.mojang.com/browse/BDS-2733). This is kind of annoying since it means you can't run the server and connect to it from the same computer, barring virtual machines (Minecraft Bedrock Edition is available on Windows 10 but not Ubuntu). If the backup issue is fixed, and I get the time, lmk and I will add Windows 10 support so you don't need the extra machine and OS.
 
 ### Scaling issues?
 I wouldn't recommend using this server to host dozens upon dozens of clients. It might work well given the correct configuration values, hardware, and network bandwith, but I haven't done any large scale tests, so attempt this at your own peril.

@@ -40,7 +40,7 @@ if (backupConfig["use-aws-s3-backup"]) {
     apiVersion: '2006-03-01'
   });
 } else {
-  console.log(`!!!!!!!!!!\nconfig["backup"]["num-backups-to-keep-for-type"] set to false - if you want to use AWS S3 backups, set this to true and see https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html for instruction on how to define your AWS credentials\n!!!!!!!!!!\n`);
+  console.log(`!!!!!!!!!!\nconfig["backup"]["use-aws-s3-backup"] set to false - if you want to use AWS S3 backups, set this to true and see https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html for instruction on how to define your AWS credentials\n!!!!!!!!!!\n`);
 }
 
 async function createBackupBucketIfNotExists() {

@@ -160,6 +160,7 @@ downloadServerIfNotExists(platform).then(() => {
         triggerGracefulExit();
       } else if (/^(save.*)/i.test(line)) {
         // intercept saves
+        console.log(`Please use the 'backup' command to create a manual backup`);
       } else if (/^(backup)/i.test(line)) {
         triggerBackup(BACKUP_TYPES.MANUAL);
       } else if (/^(force-restore)/i.test(line)) {
@@ -180,9 +181,9 @@ downloadServerIfNotExists(platform).then(() => {
           console.error('USAGE: restore <BACKUP_FILE_NAME>')
         }
       } else {
-        console.log(`Unrecognized command: ${line}`);
-        console.log('Recognized commands: backup, force-restore <BACKUP_FILE_NAME>, stop')
-        // TODO: figure out how to pipe this to the server
+        console.log('Recognized commands: backup, force-restore <BACKUP_FILE_NAME>, stop');
+        console.log('Piping the command directly to the underlying base Minecraft server since this command was not recognized by the node wrapper\n')
+        bs.stdin.write(`${line}\r\n`);
       }
     })
   });

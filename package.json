@@ -1,6 +1,6 @@
 {
   "name": "minecraft-bedrock-node",
-  "version": "2020.4.16",
+  "version": "2020.6.26",
   "description": "Easy to use Minecraft Bedrock Server with automatic cloud backups",
   "main": "main.js",
   "scripts": {

@@ -8,6 +8,7 @@ const readline = require('readline');
 let {
   spawn
 } = require('child_process');
+const pidusage = require('pidusage')
 
 
 const {
@@ -57,6 +58,17 @@ let hasSentStopCommand = false;
 const SAVE_QUERY_FREQUENCY = MS_IN_SEC * 5;
 
 let currentBackupType = null;
+
+function formatBytes(a,b=3){if(0===a)return"0 Bytes";const c=0>b?0:b,d=Math.floor(Math.log(a)/Math.log(1024));return parseFloat((a/Math.pow(1024,d)).toFixed(c))+" "+["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"][d]}
+function sec2time(timeInSeconds) {
+    var pad = function(num, size) { return ('000' + num).slice(size * -1); },
+    time = parseFloat(timeInSeconds).toFixed(3),
+    hours = Math.floor(time / 3600),
+    minutes = Math.floor(time / 60) % 60,
+    seconds = Math.floor(time - minutes * 60),
+    milliseconds = time.slice(-3);
+    return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2) + '.' + pad(milliseconds, 3);
+}
 
 downloadServerIfNotExists(platform).then(() => {
   createServerProperties().then(async () => {
@@ -142,6 +154,14 @@ downloadServerIfNotExists(platform).then(() => {
     }
     const saveHoldInterval = setInterval(triggerBackup, backupFrequencyMS, BACKUP_TYPES.SCHEDULED);
 
+    const printResourceUsage = ()=>{
+      pidusage(bs.pid, function (err, stats) {
+        console.log(`CPU Percentage (from 0 to 100*vcore): ${stats.cpu.toFixed(3)}%`);
+        console.log(`RAM: ${formatBytes(stats.memory)}`);
+        console.log(`Wrapped Server Uptime : ${sec2time(Math.round(stats.elapsed/1000))} (hh:mm:ss)`)
+      })
+    }
+
     const triggerGracefulExit = () => {
       console.log('\nBacking up, then killing Minecraft server...');
       hasSentStopCommand = true;
@@ -163,6 +183,8 @@ downloadServerIfNotExists(platform).then(() => {
         console.log(`Please use the 'backup' command to create a manual backup`);
       } else if (/^(backup)/i.test(line)) {
         triggerBackup(BACKUP_TYPES.MANUAL);
+      } else if (/^(resource-usage)$/i.test(line)) {
+        printResourceUsage();
       } else if (/^(force-restore)/i.test(line)) {
         const lineSplit = line.split('force-restore ');
         if (lineSplit.length > 0) {
@@ -181,7 +203,7 @@ downloadServerIfNotExists(platform).then(() => {
           console.error('USAGE: restore <BACKUP_FILE_NAME>')
         }
       } else {
-        console.log('Recognized commands: backup, force-restore <BACKUP_FILE_NAME>, stop');
+        console.log('Recognized commands: backup, force-restore <BACKUP_FILE_NAME>, resource-usage, stop');
         console.log('Piping the command directly to the underlying base Minecraft server since this command was not recognized by the node wrapper\n')
         bs.stdin.write(`${line}\r\n`);
       }

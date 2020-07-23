@@ -9,7 +9,7 @@ let {
   spawn
 } = require('child_process');
 const pidusage = require('pidusage')
-
+const express = require('express');
 
 const {
   CONFIG_FILE_PATH,
@@ -69,6 +69,29 @@ function sec2time(timeInSeconds) {
     milliseconds = time.slice(-3);
     return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2) + '.' + pad(milliseconds, 3);
 }
+
+const expressApp = express();
+const router = express.Router();
+
+const MAX_STORED_LINES = 20;
+const consoleLogBuffer = []
+const originalConsoleLog = console.log
+
+console.log = (text)=>{
+  originalConsoleLog(text);
+  consoleLogBuffer.push(text.replace(/\n/, '<br>'));
+  if (consoleLogBuffer.length > MAX_STORED_LINES) {
+    consoleLogBuffer.shift(); // delete first item.
+  }
+}
+console.log('Starting express server')
+
+router.get('/terminal-out', function (req, res) {
+  res.send(consoleLogBuffer.join('<br>'));
+})
+
+expressApp.use('/', router)
+expressApp.listen(3000);
 
 downloadServerIfNotExists(platform).then(() => {
   createServerProperties().then(async () => {
@@ -207,7 +230,7 @@ downloadServerIfNotExists(platform).then(() => {
         console.log('Piping the command directly to the underlying base Minecraft server since this command was not recognized by the node wrapper\n')
         bs.stdin.write(`${line}\r\n`);
       }
-    })
+    });
   });
 }).catch((error) => {
   console.error(error);

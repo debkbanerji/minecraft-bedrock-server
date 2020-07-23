@@ -10,7 +10,6 @@ let {
 } = require('child_process');
 const pidusage = require('pidusage')
 const express = require('express');
-
 const {
   CONFIG_FILE_PATH,
   UNZIPPED_SERVER_FOLDER_NAME,
@@ -56,6 +55,7 @@ assert(backupFrequencyMS > MS_IN_MIN * minBackupFrequencyMinutes, `Expected back
 let isCurrentlyBackingUp = false;
 let hasSentStopCommand = false;
 const SAVE_QUERY_FREQUENCY = MS_IN_SEC * 5;
+const UI_COMMAND_DELAY = MS_IN_SEC * 1;
 
 let currentBackupType = null;
 
@@ -72,6 +72,7 @@ function sec2time(timeInSeconds) {
 
 const expressApp = express();
 const router = express.Router();
+router.use(express.json())
 
 const MAX_STORED_LINES = 20;
 const consoleLogBuffer = []
@@ -79,7 +80,7 @@ const originalConsoleLog = console.log
 
 console.log = (text)=>{
   originalConsoleLog(text);
-  consoleLogBuffer.push(text.replace(/\n/, '<br>'));
+  consoleLogBuffer.push((text||'').replace(/\n/, '<br>'));
   if (consoleLogBuffer.length > MAX_STORED_LINES) {
     consoleLogBuffer.shift(); // delete first item.
   }
@@ -87,8 +88,38 @@ console.log = (text)=>{
 console.log('Starting express server')
 
 router.get('/terminal-out', function (req, res) {
-  res.send(consoleLogBuffer.join('<br>'));
+  res.send([`${MAX_STORED_LINES} latest lines of terminal output:`].concat(consoleLogBuffer).join('<br>'));
 })
+
+
+router.post('/stop', (req, res) => {
+    const {body} = req;
+    const {passCodeHash} = {body};
+    setTimeout(()=>{
+      rl.write('stop\n');
+      res.sendStatus(200);
+    }, UI_COMMAND_DELAY);
+});
+
+
+router.post('/trigger-manual-backup', (req, res) => {
+    const {body} = req;
+    const {passCodeHash} = {body};
+    setTimeout(()=>{
+      rl.write('backup\n');
+      res.sendStatus(200);
+    }, UI_COMMAND_DELAY);
+});
+
+router.post('/trigger-print-resource-usage', (req, res) => {
+    const {body} = req;
+    const {passCodeHash} = {body};
+    setTimeout(()=>{
+      rl.write('resource-usage\n');
+      res.sendStatus(200);
+    }, UI_COMMAND_DELAY);
+});
+
 
 expressApp.use('/', router);
 expressApp.use(express.static('static'))
@@ -180,6 +211,7 @@ downloadServerIfNotExists(platform).then(() => {
 
     const printResourceUsage = ()=>{
       pidusage(bs.pid, function (err, stats) {
+        console.log(`Resource Usage as of ${new Date().toLocaleString()}:`);
         console.log(`CPU Percentage (from 0 to 100*vcore): ${stats.cpu.toFixed(3)}%`);
         console.log(`RAM: ${formatBytes(stats.memory)}`);
         console.log(`Wrapped Server Uptime : ${sec2time(Math.round(stats.elapsed/1000))} (hh:mm:ss)`)

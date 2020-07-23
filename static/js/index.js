@@ -1,13 +1,71 @@
-const REFRESH_RATE = 5000;
-document.getElementById('refresh-frequency').innerHTML = REFRESH_RATE/1000;
+const REFRESH_RATE = 500;
+document.getElementById("refresh-frequency").innerHTML = REFRESH_RATE / 1000;
+
+const interactionButtons = [
+    "stop-server-button",
+    "trigger-manual-backup-button",
+    "print-resource-usage-button"
+].map(id => document.getElementById(id));
+function disableInteraction() {
+    interactionButtons.forEach(button => {
+        button.disabled = true;
+    });
+}
+function enableInteraction() {
+    interactionButtons.forEach(button => {
+        button.disabled = false;
+    });
+}
 
 function refreshTerminalOutput() {
     fetch("/terminal-out")
         .then(response => response.text())
         .then(text => {
-            console.log(text);
             document.getElementById("server-terminal-output").innerHTML = text;
         });
 }
 
+refreshTerminalOutput();
 setInterval(refreshTerminalOutput, REFRESH_RATE);
+
+function stopServer() {
+    disableInteraction();
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/stop", true);
+    xhr.send(JSON.stringify({}));
+    xhr.onload = () => {
+        enableInteraction();
+    };
+}
+
+function triggerManualBackup() {
+    disableInteraction();
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/trigger-manual-backup", true);
+    xhr.send(JSON.stringify({}));
+    xhr.onload = () => {
+        enableInteraction();
+    };
+}
+
+function triggerPrintResourceUsage() {
+    disableInteraction();
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/trigger-print-resource-usage", true);
+    xhr.send(JSON.stringify({}));
+    xhr.onload = () => {
+        enableInteraction();
+    };
+}
+
+document
+    .getElementById("stop-server-button")
+    .addEventListener("click", stopServer);
+
+document
+    .getElementById("trigger-manual-backup-button")
+    .addEventListener("click", triggerManualBackup);
+
+document
+    .getElementById("print-resource-usage-button")
+    .addEventListener("click", triggerPrintResourceUsage);

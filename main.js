@@ -90,7 +90,8 @@ router.get('/terminal-out', function (req, res) {
   res.send(consoleLogBuffer.join('<br>'));
 })
 
-expressApp.use('/', router)
+expressApp.use('/', router);
+expressApp.use(express.static('static'))
 expressApp.listen(3000);
 
 downloadServerIfNotExists(platform).then(() => {

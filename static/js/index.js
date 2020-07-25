@@ -1,5 +1,36 @@
-const REFRESH_RATE = 500;
+const REFRESH_RATE = 5000;
 document.getElementById("refresh-frequency").innerHTML = REFRESH_RATE / 1000;
+
+function formatBytes(a, b = 3) {
+    if (0 === a) return "0 Bytes";
+    const c = 0 > b ? 0 : b,
+        d = Math.floor(Math.log(a) / Math.log(1024));
+    return (
+        parseFloat((a / Math.pow(1024, d)).toFixed(c)) +
+        " " +
+        ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    );
+}
+
+function sec2time(timeInSeconds) {
+    var pad = function(num, size) {
+            return ("000" + num).slice(size * -1);
+        },
+        time = parseFloat(timeInSeconds).toFixed(3),
+        hours = Math.floor(time / 3600),
+        minutes = Math.floor(time / 60) % 60,
+        seconds = Math.floor(time - minutes * 60),
+        milliseconds = time.slice(-3);
+    return (
+        pad(hours, 2) +
+        ":" +
+        pad(minutes, 2) +
+        ":" +
+        pad(seconds, 2) +
+        "." +
+        pad(milliseconds, 3)
+    );
+}
 
 const interactionButtons = [
     "toggle-restore-backup-controls-button",
@@ -29,8 +60,36 @@ function refreshTerminalOutput() {
         });
 }
 
-refreshTerminalOutput();
-setInterval(refreshTerminalOutput, REFRESH_RATE);
+function refreshServerResourceUsageInfo() {
+    fetch("/resource-usage")
+        .then(response => response.json())
+        .then(stats => {
+            const statsText = [];
+            statsText.push(
+                `Resource Usage as of ${new Date().toLocaleString()}:`
+            );
+            statsText.push(
+                `CPU Percentage (from 0 to 100*vcore): ${stats.cpu.toFixed(3)}%`
+            );
+            statsText.push(`RAM: ${formatBytes(stats.memory)}`);
+            statsText.push(
+                `Wrapped Server Uptime : ${sec2time(
+                    Math.round(stats.elapsed / 1000)
+                )} (hh:mm:ss)`
+            );
+            document.getElementById(
+                "server-resource-usage-text"
+            ).innerHTML = statsText.join("\n");
+        });
+}
+
+function refreshServerInfo() {
+    refreshTerminalOutput();
+    refreshServerResourceUsageInfo();
+}
+
+refreshServerInfo();
+setInterval(refreshServerInfo, REFRESH_RATE);
 
 function stopServer() {
     disableInteraction();

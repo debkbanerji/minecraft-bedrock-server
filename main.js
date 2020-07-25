@@ -113,6 +113,16 @@ router.get("/terminal-out", (req, res) => {
     );
 });
 
+router.get("/resource-usage", (req, res) => {
+    pidusage(bs.pid, (err, stats) => {
+        res.send({
+            cpu: stats.cpu,
+            elapsed: stats.elapsed,
+            memory: stats.memory
+        });
+    });
+});
+
 router.post("/stop", (req, res) => {
     const {body} = req;
     const {passCodeHash} = {body};
@@ -165,6 +175,8 @@ expressApp.use("/", router);
 expressApp.use(express.static("static"));
 expressApp.listen(3000);
 
+let bs = null;
+
 downloadServerIfNotExists(platform)
     .then(() => {
         createServerProperties().then(async () => {
@@ -176,8 +188,6 @@ downloadServerIfNotExists(platform)
             console.log(
                 `!!!!!!!!!!\nWARNING: Use the 'stop' command to stop the server gracefully, or you may lose non backed up up data\n!!!!!!!!!!\n`
             );
-
-            let bs = null;
 
             const spawnServer = () => {
                 bs = spawn("./bedrock_server", [], {

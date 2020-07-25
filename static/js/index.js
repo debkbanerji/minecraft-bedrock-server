@@ -156,7 +156,6 @@ function refreshBackupList() {
             dropdownOptions.innerHTML = "";
             backups.forEach(backup => {
                 const option = document.createElement("a");
-                option.href = "#";
                 option.className = "dropdown-item";
                 option.textContent = backup + getBackupTimestampString(backup);
                 option.value = backup;

@@ -26,14 +26,12 @@
   </div>
 
   <div>
+    <button class="btn dropdown-toggle" id="toggle-restore-backup-controls-button" type="button" data-toggle="collapse" data-target="#restore-backup-controls" aria-expanded="false" aria-controls="restore-backup-controls">
+      Restore Backup
+    </button>
     <button class="btn" id="trigger-manual-backup-button">Trigger Manual Backup</button>
     <button class="btn" id="print-resource-usage-button">Print Resource Usage</button>
     <button class="btn btn-danger" id="stop-server-button">Stop Server</button>
-    <p>
-      <button class="btn  dropdown-toggle" id="toggle-restore-backup-controls-button" type="button" data-toggle="collapse" data-target="#restore-backup-controls" aria-expanded="false" aria-controls="restore-backup-controls">
-        Restore Backup
-      </button>
-    </p>
     <div class="collapse" id="restore-backup-controls">
       <div class="card card-body">
         <div class="dropdown">
@@ -44,7 +42,8 @@
             <a class="dropdown-item">No backups found (yet)</a>
           </div>
           <br>
-          <span id="selected-backup"></span>
+          <span id="selected-backup"></span> <span id="selected-backup-timestamp"></span>
+
         </div>
       </div>
     </div>

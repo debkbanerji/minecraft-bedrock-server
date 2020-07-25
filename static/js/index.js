@@ -59,6 +59,7 @@ function triggerPrintResourceUsage() {
 }
 
 function refreshBackupList() {
+    setSelectedBackup(null);
     fetch("/backup-list")
         .then(response => response.json())
         .then(backups => {
@@ -67,12 +68,21 @@ function refreshBackupList() {
             );
             dropdownOptions.innerHTML = "";
             backups.forEach(backup => {
-                const option = document.createElement("option");
+                const option = document.createElement("a");
+                option.href = "#";
+                option.className = "dropdown-item";
                 option.textContent = backup;
                 option.value = backup;
+                option.addEventListener("click", () =>
+                    setSelectedBackup(backup)
+                );
                 dropdownOptions.appendChild(option);
             });
         });
+}
+
+function setSelectedBackup(backup) {
+    document.getElementById("selected-backup").innerHTML = backup;
 }
 
 document

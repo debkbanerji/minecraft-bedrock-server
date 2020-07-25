@@ -34,7 +34,8 @@ const {
   createBackup,
   restoreLocalBackup,
   restoreLatestLocalBackup,
-  createUnscheduledBackup
+  createUnscheduledBackup,
+  getBackupList
 } = require('./backup.js');
 
 const rl = readline.createInterface({
@@ -87,7 +88,7 @@ console.log = (text)=>{
 }
 console.log('Starting express server')
 
-router.get('/terminal-out', function (req, res) {
+router.get('/terminal-out', (req, res) => {
   res.send([`${MAX_STORED_LINES} latest lines of terminal output:`].concat(consoleLogBuffer).join('<br>'));
 })
 
@@ -119,6 +120,11 @@ router.post('/trigger-print-resource-usage', (req, res) => {
       res.sendStatus(200);
     }, UI_COMMAND_DELAY);
 });
+
+router.get('/backup-list', async  (req, res) =>{
+  const backups = await getBackupList();
+  res.send(backups);
+})
 
 
 expressApp.use('/', router);

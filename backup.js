@@ -303,11 +303,18 @@ async function downloadRemoteBackups() {
   }
 }
 
+async function getBackupList() {
+  await fs.ensureDir(BACKUP_FOLDER_PATH);
+  const allArchives = await fs.readdir(BACKUP_FOLDER_PATH);
+  return allArchives;
+}
+
 module.exports = {
   createBackupBucketIfNotExists,
   downloadRemoteBackups,
   createBackup,
   restoreLocalBackup,
   restoreLatestLocalBackup,
-  createUnscheduledBackup
+  createUnscheduledBackup,
+  getBackupList
 };

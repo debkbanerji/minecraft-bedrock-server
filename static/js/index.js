@@ -58,6 +58,23 @@ function triggerPrintResourceUsage() {
     };
 }
 
+function refreshBackupList() {
+    fetch("/backup-list")
+        .then(response => response.json())
+        .then(backups => {
+            const dropdownOptions = document.getElementById(
+                "restore-backup-options"
+            );
+            dropdownOptions.innerHTML = "";
+            backups.forEach(backup => {
+                const option = document.createElement("option");
+                option.textContent = backup;
+                option.value = backup;
+                dropdownOptions.appendChild(option);
+            });
+        });
+}
+
 document
     .getElementById("stop-server-button")
     .addEventListener("click", stopServer);
@@ -69,3 +86,7 @@ document
 document
     .getElementById("print-resource-usage-button")
     .addEventListener("click", triggerPrintResourceUsage);
+
+document
+    .getElementById("toggle-restore-backup-controls-button")
+    .addEventListener("click", refreshBackupList); // also refreshes it on close, but nbd

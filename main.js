@@ -88,10 +88,6 @@ function sec2time(timeInSeconds) {
     );
 }
 
-const expressApp = express();
-const router = express.Router();
-expressApp.use(express.json());
-
 const MAX_STORED_LINES = 20;
 const consoleLogBuffer = [];
 const originalConsoleLog = console.log;
@@ -103,77 +99,89 @@ console.log = text => {
         consoleLogBuffer.shift(); // delete first item.
     }
 };
-console.log("Starting express server");
 
-router.get("/terminal-out", (req, res) => {
-    res.send(
-        [`${MAX_STORED_LINES} latest lines of terminal output:`]
-            .concat(consoleLogBuffer)
-            .join("<br>")
-    );
-});
+const uiConfig = config.ui;
+if ((uiConfig || {}).enabled) {
+    console.log("Starting express server");
 
-router.get("/resource-usage", (req, res) => {
-    pidusage(bs.pid, (err, stats) => {
-        res.send({
-            cpu: stats.cpu,
-            elapsed: stats.elapsed,
-            memory: stats.memory
+    const expressApp = express();
+    const router = express.Router();
+    expressApp.use(express.json());
+
+    router.get("/terminal-out", (req, res) => {
+        res.send(
+            [`${MAX_STORED_LINES} latest lines of terminal output:`]
+                .concat(consoleLogBuffer)
+                .join("<br>")
+        );
+    });
+
+    router.get("/resource-usage", (req, res) => {
+        pidusage(bs.pid, (err, stats) => {
+            res.send({
+                cpu: stats.cpu,
+                elapsed: stats.elapsed,
+                memory: stats.memory
+            });
         });
     });
-});
 
-router.post("/stop", (req, res) => {
-    const {body} = req;
-    const {passCodeHash} = {body};
-    setTimeout(() => {
-        rl.write("stop\n");
-        res.sendStatus(200);
-    }, UI_COMMAND_DELAY);
-});
+    router.post("/stop", (req, res) => {
+        const {body} = req;
+        const {passCodeHash} = {body};
+        setTimeout(() => {
+            rl.write("stop\n");
+            res.sendStatus(200);
+        }, UI_COMMAND_DELAY);
+    });
 
-router.post("/trigger-manual-backup", (req, res) => {
-    const {body} = req;
-    const {passCodeHash} = {body};
-    setTimeout(() => {
-        rl.write("backup\n");
-        res.sendStatus(200);
-    }, UI_COMMAND_DELAY);
-});
+    router.post("/trigger-manual-backup", (req, res) => {
+        const {body} = req;
+        const {passCodeHash} = {body};
+        setTimeout(() => {
+            rl.write("backup\n");
+            res.sendStatus(200);
+        }, UI_COMMAND_DELAY);
+    });
 
-router.post("/trigger-print-resource-usage", (req, res) => {
-    const {body} = req;
-    const {passCodeHash} = {body};
-    setTimeout(() => {
-        rl.write("resource-usage\n");
-        res.sendStatus(200);
-    }, UI_COMMAND_DELAY);
-});
+    router.post("/trigger-print-resource-usage", (req, res) => {
+        const {body} = req;
+        const {passCodeHash} = {body};
+        setTimeout(() => {
+            rl.write("resource-usage\n");
+            res.sendStatus(200);
+        }, UI_COMMAND_DELAY);
+    });
 
-router.post("/trigger-restore-backup", async (req, res) => {
-    const {body} = req;
-    const {passCodeHash} = {body};
-    setTimeout(async () => {
-        const backup = body.backup;
+    router.post("/trigger-restore-backup", async (req, res) => {
+        const {body} = req;
+        const {passCodeHash} = {body};
+        setTimeout(async () => {
+            const backup = body.backup;
+            const backups = await getBackupList();
+            if (backups.includes(backup)) {
+                // do this check to avoid weird injection errors
+                rl.write(`force-restore ${body.backup}\n`);
+            } else {
+                console.log(`Backup ${body.backup} not found`);
+            }
+            res.sendStatus(200);
+        }, UI_COMMAND_DELAY);
+    });
+
+    router.get("/backup-list", async (req, res) => {
         const backups = await getBackupList();
-        if (backups.includes(backup)) {
-            // do this check to avoid weird injection errors
-            rl.write(`force-restore ${body.backup}\n`);
-        } else {
-            console.log(`Backup ${body.backup} not found`);
-        }
-        res.sendStatus(200);
-    }, UI_COMMAND_DELAY);
-});
+        res.send(backups);
+    });
 
-router.get("/backup-list", async (req, res) => {
-    const backups = await getBackupList();
-    res.send(backups);
-});
+    expressApp.use("/", router);
+    expressApp.use(express.static("static"));
+    expressApp.listen(uiConfig.port);
 
-expressApp.use("/", router);
-expressApp.use(express.static("static"));
-expressApp.listen(3000);
+    console.log(`Running UI for server on port ${uiConfig.port}\n`);
+} else {
+    console.log("Running server without UI\n");
+}
 
 let bs = null;
 

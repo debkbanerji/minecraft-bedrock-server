@@ -33,6 +33,10 @@
     "player-movement-duration-threshold-in-ms": 500,
     "correct-player-movement": false
   },
+  "ui": {
+    "enabled": false,
+    "port": 3000
+  },
   "backup": {
     "backup-frequency-minutes": 20,
     "use-aws-s3-backup": false,

@@ -35,9 +35,16 @@ function sec2time(timeInSeconds) {
 let inputAdminCodeHash;
 function updateCurrentAdminCodeHash() {
     inputAdminCodeHash = sjcl.codec.hex
-        .fromBits(sjcl.hash.sha256.hash("minecraft"))
+        .fromBits(
+            sjcl.hash.sha256.hash(
+                document.getElementById("admin-code").value || ""
+            )
+        )
         .toUpperCase();
 }
+document
+    .getElementById("admin-code")
+    .addEventListener("input", updateCurrentAdminCodeHash);
 updateCurrentAdminCodeHash();
 
 const interactionButtons = [

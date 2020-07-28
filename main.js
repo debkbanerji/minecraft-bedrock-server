@@ -28,6 +28,7 @@ const {
     createUnscheduledBackup,
     getBackupList
 } = require("./backup.js");
+const crypto = require("crypto");
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -100,9 +101,28 @@ console.log = text => {
     }
 };
 
+let salt = crypto
+    .randomBytes(32)
+    .toString("hex")
+    .toUpperCase();
+
 const uiConfig = config.ui;
 if ((uiConfig || {}).enabled) {
     console.log("Starting express server");
+
+    function clientHashIsValid(clientHashWithSalt) {
+        return (
+            (clientHashWithSalt || "").toUpperCase() ===
+            crypto
+                .createHash("sha256")
+                .update(
+                    uiConfig["admin-code-sha256-hash"].toUpperCase() +
+                        salt.toUpperCase()
+                )
+                .digest("hex")
+                .toUpperCase()
+        );
+    }
 
     const expressApp = express();
     const router = express.Router();
@@ -126,46 +146,71 @@ if ((uiConfig || {}).enabled) {
         });
     });
 
+    router.get("/salt", (req, res) => {
+        // refresh salt anytime anyone asks for it
+        salt = crypto
+            .randomBytes(32)
+            .toString("hex")
+            .toUpperCase();
+        res.send(salt);
+    });
+
     router.post("/stop", (req, res) => {
         const {body} = req;
-        const {passCodeHash} = {body};
+        const {adminCodeHash} = {body};
         setTimeout(() => {
-            rl.write("stop\n");
-            res.sendStatus(200);
+            if (clientHashIsValid(body.adminCodeHash)) {
+                rl.write("stop\n");
+                res.sendStatus(200);
+            } else {
+                res.sendStatus(401);
+            }
         }, UI_COMMAND_DELAY);
     });
 
     router.post("/trigger-manual-backup", (req, res) => {
         const {body} = req;
-        const {passCodeHash} = {body};
+        const {adminCodeHash} = {body};
         setTimeout(() => {
-            rl.write("backup\n");
-            res.sendStatus(200);
+            if (clientHashIsValid(body.adminCodeHash)) {
+                rl.write("backup\n");
+                res.sendStatus(200);
+            } else {
+                res.sendStatus(401);
+            }
         }, UI_COMMAND_DELAY);
     });
 
     router.post("/trigger-print-resource-usage", (req, res) => {
         const {body} = req;
-        const {passCodeHash} = {body};
+
         setTimeout(() => {
-            rl.write("resource-usage\n");
-            res.sendStatus(200);
+            if (clientHashIsValid(body.adminCodeHash)) {
+                rl.write("resource-usage\n");
+                res.sendStatus(200);
+            } else {
+                res.sendStatus(401);
+            }
         }, UI_COMMAND_DELAY);
     });
 
     router.post("/trigger-restore-backup", async (req, res) => {
         const {body} = req;
-        const {passCodeHash} = {body};
+        const {adminCodeHash} = {body};
         setTimeout(async () => {
-            const backup = body.backup;
-            const backups = await getBackupList();
-            if (backups.includes(backup)) {
-                // do this check to avoid weird injection errors
-                rl.write(`force-restore ${body.backup}\n`);
+            if (clientHashIsValid(body.adminCodeHash)) {
+                const backup = body.backup;
+                const backups = await getBackupList();
+                if (backups.includes(backup)) {
+                    // do this check to avoid weird injection errors
+                    rl.write(`force-restore ${body.backup}\n`);
+                } else {
+                    console.log(`Backup ${body.backup} not found`);
+                }
+                res.sendStatus(200);
             } else {
-                console.log(`Backup ${body.backup} not found`);
+                res.sendStatus(401);
             }
-            res.sendStatus(200);
         }, UI_COMMAND_DELAY);
     });
 

@@ -35,7 +35,8 @@
   },
   "ui": {
     "enabled": false,
-    "port": 3000
+    "port": 3000,
+    "admin-code-sha256-hash": "replace-this-with-the-sha256-hash-of-your-admin-code"
   },
   "backup": {
     "backup-frequency-minutes": 20,

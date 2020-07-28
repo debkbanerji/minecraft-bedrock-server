@@ -32,6 +32,14 @@ function sec2time(timeInSeconds) {
     );
 }
 
+let inputAdminCodeHash;
+function updateCurrentAdminCodeHash() {
+    inputAdminCodeHash = sjcl.codec.hex
+        .fromBits(sjcl.hash.sha256.hash("minecraft"))
+        .toUpperCase();
+}
+updateCurrentAdminCodeHash();
+
 const interactionButtons = [
     "toggle-restore-backup-controls-button",
     "stop-server-button",
@@ -93,48 +101,96 @@ setInterval(refreshServerInfo, REFRESH_RATE);
 
 function stopServer() {
     disableInteraction();
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/stop", true);
-    xhr.send(JSON.stringify({}));
-    xhr.onload = () => {
-        setSelectedBackup(null);
-        enableInteraction();
-    };
+    fetch("/salt")
+        .then(response => response.text())
+        .then(salt => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/stop", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(
+                JSON.stringify({
+                    adminCodeHash: sjcl.codec.hex.fromBits(
+                        sjcl.hash.sha256.hash(
+                            inputAdminCodeHash + salt.toUpperCase()
+                        )
+                    )
+                })
+            );
+            xhr.onload = () => {
+                setSelectedBackup(null);
+                enableInteraction();
+            };
+        });
 }
 
 function triggerManualBackup() {
     disableInteraction();
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/trigger-manual-backup", true);
-    xhr.send(JSON.stringify({}));
-    xhr.onload = () => {
-        enableInteraction();
-    };
+    fetch("/salt")
+        .then(response => response.text())
+        .then(salt => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/trigger-manual-backup", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(
+                JSON.stringify({
+                    adminCodeHash: sjcl.codec.hex.fromBits(
+                        sjcl.hash.sha256.hash(
+                            inputAdminCodeHash + salt.toUpperCase()
+                        )
+                    )
+                })
+            );
+            xhr.onload = () => {
+                enableInteraction();
+            };
+        });
 }
 
 function triggerPrintResourceUsage() {
     disableInteraction();
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/trigger-print-resource-usage", true);
-    xhr.send(JSON.stringify({}));
-    xhr.onload = () => {
-        enableInteraction();
-    };
+    fetch("/salt")
+        .then(response => response.text())
+        .then(salt => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/trigger-print-resource-usage", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(
+                JSON.stringify({
+                    adminCodeHash: sjcl.codec.hex.fromBits(
+                        sjcl.hash.sha256.hash(
+                            inputAdminCodeHash + salt.toUpperCase()
+                        )
+                    )
+                })
+            );
+            xhr.onload = () => {
+                enableInteraction();
+            };
+        });
 }
 
 function triggerRestoreBackup() {
     disableInteraction();
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/trigger-restore-backup", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(
-        JSON.stringify({
-            backup: document.getElementById("selected-backup").innerHTML
-        })
-    );
-    xhr.onload = () => {
-        enableInteraction();
-    };
+    fetch("/salt")
+        .then(response => response.text())
+        .then(salt => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/trigger-restore-backup", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(
+                JSON.stringify({
+                    adminCodeHash: sjcl.codec.hex.fromBits(
+                        sjcl.hash.sha256.hash(
+                            inputAdminCodeHash + salt.toUpperCase()
+                        )
+                    ),
+                    backup: document.getElementById("selected-backup").innerHTML
+                })
+            );
+            xhr.onload = () => {
+                enableInteraction();
+            };
+        });
 }
 
 function getBackupTimestampString(backup) {

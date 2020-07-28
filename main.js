@@ -163,6 +163,7 @@ if ((uiConfig || {}).enabled) {
                 rl.write("stop\n");
                 res.sendStatus(200);
             } else {
+                console.log("Rejected unauthorized request to stop server");
                 res.sendStatus(401);
             }
         }, UI_COMMAND_DELAY);
@@ -176,6 +177,9 @@ if ((uiConfig || {}).enabled) {
                 rl.write("backup\n");
                 res.sendStatus(200);
             } else {
+                console.log(
+                    "Rejected unauthorized request to trigger manual backup"
+                );
                 res.sendStatus(401);
             }
         }, UI_COMMAND_DELAY);
@@ -189,6 +193,9 @@ if ((uiConfig || {}).enabled) {
                 rl.write("resource-usage\n");
                 res.sendStatus(200);
             } else {
+                console.log(
+                    "Rejected unauthorized request to print resource usage"
+                );
                 res.sendStatus(401);
             }
         }, UI_COMMAND_DELAY);
@@ -209,6 +216,9 @@ if ((uiConfig || {}).enabled) {
                 }
                 res.sendStatus(200);
             } else {
+                console.log(
+                    `Rejected unauthorized request to restore backup ${body.backup}`
+                );
                 res.sendStatus(401);
             }
         }, UI_COMMAND_DELAY);

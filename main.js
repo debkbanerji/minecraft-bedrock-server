@@ -385,7 +385,9 @@ downloadServerIfNotExists(platform)
             });
 
             rl.on("line", async line => {
-                if (/^(stop|exit)$/i.test(line)) {
+                if (/^(\r|\n|)$/i.test(line)) {
+                    // ignore blank commands
+                } else if (/^(stop|exit)$/i.test(line)) {
                     triggerGracefulExit();
                 } else if (/^(save.*)/i.test(line)) {
                     // intercept saves

@@ -177,6 +177,30 @@ function triggerPrintResourceUsage() {
         });
 }
 
+function triggerPrintPlayerList() {
+    disableInteraction();
+    fetch("/salt")
+        .then(response => response.text())
+        .then(salt => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/trigger-print-player-list", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader(
+                "Authorization",
+                sjcl.codec.hex.fromBits(
+                    sjcl.hash.sha256.hash(
+                        inputAdminCodeHash + salt.toUpperCase()
+                    )
+                )
+            );
+
+            xhr.send(JSON.stringify({}));
+            xhr.onload = () => {
+                enableInteraction();
+            };
+        });
+}
+
 function triggerRestoreBackup() {
     disableInteraction();
     fetch("/salt")
@@ -261,6 +285,10 @@ document
 document
     .getElementById("print-resource-usage-button")
     .addEventListener("click", triggerPrintResourceUsage);
+
+document
+    .getElementById("print-player-list-button")
+    .addEventListener("click", triggerPrintPlayerList);
 
 document
     .getElementById("toggle-restore-backup-controls-button")

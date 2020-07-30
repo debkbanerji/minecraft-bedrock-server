@@ -138,11 +138,15 @@ if ((uiConfig || {}).enabled) {
 
     router.get("/resource-usage", (req, res) => {
         pidusage(bs.pid, (err, stats) => {
-            res.send({
-                cpu: stats.cpu,
-                elapsed: stats.elapsed,
-                memory: stats.memory
-            });
+            let result = {};
+            if (stats != null) {
+                result = {
+                    cpu: stats.cpu,
+                    elapsed: stats.elapsed,
+                    memory: stats.memory
+                };
+            }
+            res.send(result);
         });
     });
 
@@ -153,6 +157,10 @@ if ((uiConfig || {}).enabled) {
             .toString("hex")
             .toUpperCase();
         res.send(salt);
+    });
+
+    router.get("/is-auth-valid", (req, res) => {
+        res.send(clientHashIsValid(req.header("Authorization")));
     });
 
     router.post("/stop", (req, res) => {
@@ -190,6 +198,21 @@ if ((uiConfig || {}).enabled) {
         setTimeout(() => {
             if (clientHashIsValid(req.header("Authorization"))) {
                 rl.write("resource-usage\n");
+                res.sendStatus(200);
+            } else {
+                console.log(
+                    "Rejected unauthorized request to print resource usage"
+                );
+                res.sendStatus(401);
+            }
+        }, UI_COMMAND_DELAY);
+    });
+
+    router.post("/trigger-print-player-list", (req, res) => {
+        const {body} = req;
+        setTimeout(() => {
+            if (clientHashIsValid(req.header("Authorization"))) {
+                rl.write("list\n");
                 res.sendStatus(200);
             } else {
                 console.log(
@@ -397,6 +420,8 @@ downloadServerIfNotExists(platform)
                     triggerBackup(BACKUP_TYPES.MANUAL);
                 } else if (/^(resource-usage)$/i.test(line)) {
                     printResourceUsage();
+                } else if (/^(list)$/i.test(line)) {
+                    bs.stdin.write(`list\r\n`);
                 } else if (/^(force-restore)/i.test(line)) {
                     const lineSplit = line.split("force-restore ");
                     if (lineSplit.length > 0) {

@@ -52,6 +52,7 @@ const interactionButtons = [
     "stop-server-button",
     "trigger-manual-backup-button",
     "print-resource-usage-button",
+    "print-player-list-button",
     "restore-backup-dropdown-button",
     "trigger-restore-backup-button"
 ].map(id => document.getElementById(id));

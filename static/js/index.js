@@ -114,15 +114,15 @@ function stopServer() {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/stop", true);
             xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(
-                JSON.stringify({
-                    adminCodeHash: sjcl.codec.hex.fromBits(
-                        sjcl.hash.sha256.hash(
-                            inputAdminCodeHash + salt.toUpperCase()
-                        )
+            xhr.setRequestHeader(
+                "Authorization",
+                sjcl.codec.hex.fromBits(
+                    sjcl.hash.sha256.hash(
+                        inputAdminCodeHash + salt.toUpperCase()
                     )
-                })
+                )
             );
+            xhr.send(JSON.stringify({}));
             xhr.onload = () => {
                 setSelectedBackup(null);
                 enableInteraction();
@@ -138,15 +138,15 @@ function triggerManualBackup() {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/trigger-manual-backup", true);
             xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(
-                JSON.stringify({
-                    adminCodeHash: sjcl.codec.hex.fromBits(
-                        sjcl.hash.sha256.hash(
-                            inputAdminCodeHash + salt.toUpperCase()
-                        )
+            xhr.setRequestHeader(
+                "Authorization",
+                sjcl.codec.hex.fromBits(
+                    sjcl.hash.sha256.hash(
+                        inputAdminCodeHash + salt.toUpperCase()
                     )
-                })
+                )
             );
+            xhr.send(JSON.stringify({}));
             xhr.onload = () => {
                 enableInteraction();
             };
@@ -161,15 +161,16 @@ function triggerPrintResourceUsage() {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/trigger-print-resource-usage", true);
             xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(
-                JSON.stringify({
-                    adminCodeHash: sjcl.codec.hex.fromBits(
-                        sjcl.hash.sha256.hash(
-                            inputAdminCodeHash + salt.toUpperCase()
-                        )
+            xhr.setRequestHeader(
+                "Authorization",
+                sjcl.codec.hex.fromBits(
+                    sjcl.hash.sha256.hash(
+                        inputAdminCodeHash + salt.toUpperCase()
                     )
-                })
+                )
             );
+
+            xhr.send(JSON.stringify({}));
             xhr.onload = () => {
                 enableInteraction();
             };
@@ -184,13 +185,16 @@ function triggerRestoreBackup() {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/trigger-restore-backup", true);
             xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader(
+                "Authorization",
+                sjcl.codec.hex.fromBits(
+                    sjcl.hash.sha256.hash(
+                        inputAdminCodeHash + salt.toUpperCase()
+                    )
+                )
+            );
             xhr.send(
                 JSON.stringify({
-                    adminCodeHash: sjcl.codec.hex.fromBits(
-                        sjcl.hash.sha256.hash(
-                            inputAdminCodeHash + salt.toUpperCase()
-                        )
-                    ),
                     backup: document.getElementById("selected-backup").innerHTML
                 })
             );

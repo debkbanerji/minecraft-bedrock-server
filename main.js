@@ -159,7 +159,7 @@ if ((uiConfig || {}).enabled) {
         const {body} = req;
         const {adminCodeHash} = {body};
         setTimeout(() => {
-            if (clientHashIsValid(body.adminCodeHash)) {
+            if (clientHashIsValid(req.header("Authorization"))) {
                 rl.write("stop\n");
                 res.sendStatus(200);
             } else {
@@ -173,7 +173,7 @@ if ((uiConfig || {}).enabled) {
         const {body} = req;
         const {adminCodeHash} = {body};
         setTimeout(() => {
-            if (clientHashIsValid(body.adminCodeHash)) {
+            if (clientHashIsValid(req.header("Authorization"))) {
                 rl.write("backup\n");
                 res.sendStatus(200);
             } else {
@@ -187,9 +187,8 @@ if ((uiConfig || {}).enabled) {
 
     router.post("/trigger-print-resource-usage", (req, res) => {
         const {body} = req;
-
         setTimeout(() => {
-            if (clientHashIsValid(body.adminCodeHash)) {
+            if (clientHashIsValid(req.header("Authorization"))) {
                 rl.write("resource-usage\n");
                 res.sendStatus(200);
             } else {
@@ -205,7 +204,7 @@ if ((uiConfig || {}).enabled) {
         const {body} = req;
         const {adminCodeHash} = {body};
         setTimeout(async () => {
-            if (clientHashIsValid(body.adminCodeHash)) {
+            if (clientHashIsValid(req.header("Authorization"))) {
                 const backup = body.backup;
                 const backups = await getBackupList();
                 if (backups.includes(backup)) {

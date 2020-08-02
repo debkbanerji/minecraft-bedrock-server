@@ -312,6 +312,17 @@ document
     .addEventListener("click", attemptLogin);
 
 document
+    .getElementById("admin-code")
+    .addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) { // "Enter" key
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            document.getElementById("login-button").click();
+        }
+    });
+
+document
     .getElementById("stop-server-button")
     .addEventListener("click", stopServer);
 

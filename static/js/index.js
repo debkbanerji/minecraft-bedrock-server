@@ -101,6 +101,8 @@ function refreshTerminalOutput() {
         .then(response => response.text())
         .then(text => {
             document.getElementById("server-terminal-output").innerHTML = text;
+        }).catch(function() {
+            document.getElementById("server-terminal-output").innerHTML = 'Error connecting to server';
         });
 }
 
@@ -124,6 +126,8 @@ function refreshServerResourceUsageInfo() {
             document.getElementById(
                 "server-resource-usage-text"
             ).innerHTML = statsText.join("\n");
+        }).catch(function() {
+            document.getElementById("server-resource-usage-text").innerHTML = 'Error connecting to server';
         });
 }
 

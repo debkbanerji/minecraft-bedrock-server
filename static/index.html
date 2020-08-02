@@ -26,7 +26,11 @@
   <div id="post-login-content" hidden="true">
     <div>
       <i>
-        Refresh frequency: every <span id="refresh-frequency"></span> seconds
+        Refresh frequency: every
+        <select name="refresh-rate" id="refresh-rate">
+          <option value="500">0.5 Seconds</option>
+          <option value="5000">5 Seconds (recommended)</option>
+        </select>
       </i>
       <h2>Server Resource Usage Info:</h2>
       <div class="card card-body">

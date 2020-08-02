@@ -1,6 +1,3 @@
-const REFRESH_RATE = 5000;
-document.getElementById("refresh-frequency").innerHTML = REFRESH_RATE / 1000;
-
 function formatBytes(a, b = 3) {
     if (0 === a) return "0 Bytes";
     const c = 0 > b ? 0 : b,
@@ -136,8 +133,20 @@ function refreshServerInfo() {
     refreshServerResourceUsageInfo();
 }
 
-refreshServerInfo();
-setInterval(refreshServerInfo, REFRESH_RATE);
+let refreshInterval;
+document.getElementById("refresh-rate").value = 5000;
+
+function setRefreshRate() {
+    const refreshRate = document.getElementById("refresh-rate").value;
+    refreshServerInfo();
+    if (refreshInterval) {
+        clearInterval(refreshInterval);
+    }
+    refreshInterval = setInterval(refreshServerInfo, refreshRate);
+}
+setRefreshRate();
+
+document.getElementById("refresh-rate").addEventListener("change", setRefreshRate);
 
 function stopServer() {
     disableInteraction();

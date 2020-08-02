@@ -7,8 +7,7 @@ function formatBytes(a, b = 3) {
         d = Math.floor(Math.log(a) / Math.log(1024));
     return (
         parseFloat((a / Math.pow(1024, d)).toFixed(c)) +
-        " " +
-        ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+        " " + ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
     );
 }
 
@@ -33,6 +32,7 @@ function sec2time(timeInSeconds) {
 }
 
 let inputAdminCodeHash;
+
 function updateCurrentAdminCodeHash() {
     inputAdminCodeHash = sjcl.codec.hex
         .fromBits(
@@ -42,10 +42,6 @@ function updateCurrentAdminCodeHash() {
         )
         .toUpperCase();
 }
-document
-    .getElementById("admin-code")
-    .addEventListener("input", updateCurrentAdminCodeHash);
-updateCurrentAdminCodeHash();
 
 const interactionButtons = [
     "toggle-restore-backup-controls-button",
@@ -56,16 +52,48 @@ const interactionButtons = [
     "restore-backup-dropdown-button",
     "trigger-restore-backup-button"
 ].map(id => document.getElementById(id));
+
 function disableInteraction() {
     interactionButtons.forEach(button => {
         button.disabled = true;
     });
 }
+
 function enableInteraction() {
     interactionButtons.forEach(button => {
         button.disabled = false;
     });
     setSelectedBackup(document.getElementById("selected-backup").innerHTML);
+}
+
+function attemptLogin() {
+    fetch("/salt")
+        .then(response => response.text())
+        .then(salt => {
+            updateCurrentAdminCodeHash();
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/is-auth-valid", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader(
+                "Authorization",
+                sjcl.codec.hex.fromBits(
+                    sjcl.hash.sha256.hash(
+                        inputAdminCodeHash + salt.toUpperCase()
+                    )
+                )
+            );
+            xhr.send(JSON.stringify({}));
+            xhr.onload = (res) => {
+                if (xhr.response === 'true') {
+                    document.getElementById('login-content').hidden = true;
+                    document.getElementById('post-login-content').hidden = false;
+                } else {
+                    alert('Incorrect admin code');
+                }
+                enableInteraction();
+            };
+        });
+
 }
 
 function refreshTerminalOutput() {
@@ -232,9 +260,9 @@ function triggerRestoreBackup() {
 function getBackupTimestampString(backup) {
     const numberPrefixRegex = /^\d*/;
     const timestamp = (backup || "").match(numberPrefixRegex)[0];
-    return timestamp
-        ? ` (Likely created on ${new Date(timestamp * 1000).toLocaleString()})`
-        : "";
+    return timestamp ?
+        ` (Likely created on ${new Date(timestamp * 1000).toLocaleString()})` :
+        "";
 }
 
 function refreshBackupList() {
@@ -274,6 +302,10 @@ function setSelectedBackup(backup) {
         ).disabled = false;
     }
 }
+
+document
+    .getElementById("login-button")
+    .addEventListener("click", attemptLogin);
 
 document
     .getElementById("stop-server-button")

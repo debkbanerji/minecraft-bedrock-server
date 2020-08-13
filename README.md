@@ -58,6 +58,7 @@ Rename the `EXAMPLE_config.json` file to `config.json` and delete the comment li
 | `accept-official-minecraft-server-eula` | Whether or not you agree to the official Minecraft [End User License Agreement and Privacy Policy](https://www.minecraft.net/en-us/download/server/bedrock/). **You must agree by setting this to true in order to run this software** |
 |`minecraft-server-version`|The version of [Mojang's server software](https://www.minecraft.net/en-us/download/server/bedrock/) that will be downloaded and used. The default value of this is the latest version I've tested with, though you should theoretically be able to update this if you run into issues. Be careful about updating though, since Mojang may break some backwards compatiblity. If you update this and run `npm start` the software will try to download the server version you specify, though it won't delete the old version just in case.|
 | `server-properties` | These are the base properties that define server behavior. Most should be self explanatory, but you can find more detailed descriptions [here](https://minecraft.gamepedia.com/Server.properties#Bedrock_Edition_3). **Be careful about changing the server and level names after you've run the server, since this may mess up how the server locates backups** |
+|`ui`|You can optionally set the `enabled` flag here to `true` in order to run a web based UI for basic server managing on the specified `port`. If you do so, you'll need to set `admin-code-sha256-hash` to the [sha256](https://xorbin.com/tools/sha256-hash-calculator) hash of the code that needs to be entered in order to access the UI. Please be careful when sharing this and keep general password hygiene in mind.|
 |`backup`|See the **The Backup System** section further down this page for more details on how this works|
 
 ### Amazon S3 cloud backups (optional)
@@ -87,6 +88,9 @@ In order to properly stop the server, type in the following command:
 `stop`
 
 ### Connecting to the server
+
+#### Connecting to the UI
+If you've enabled backups in the UI section of the config file, you can access the web UI on the port you've defined in the UI section, so if your UI port is `3000`, you'll be able to access the UI on the machine you're running the server on at `localhost:3000` in your browser. If you want other people to be able to access this admin UI, you can forward this port using the information in the next section, but be careful when doing this - while the UI has some protection against stuff like replay attacks, and every change request needs to be authenticated, the server does not (yet) have a UI killswitch or other mechanism to protect against repeated password guesses. Also avoid sharing the UI if you don't want other people to see stuff like the terminal ouput for the server, or a list of backups, since these requests do not require an admin code.
 
 #### Port forwarding/IP stuff
 Take a note of the `server-port` field that you set under `server-properties` in `config.json`. This is the port that the server will listen on once you set up port forwarding, and you'll need to give this to anyone who wants to connect to it. The default value for this is `19132`.

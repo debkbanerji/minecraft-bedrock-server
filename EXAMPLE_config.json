@@ -33,6 +33,11 @@
     "player-movement-duration-threshold-in-ms": 500,
     "correct-player-movement": false
   },
+  "ui": {
+    "enabled": false,
+    "port": 3000,
+    "admin-code-sha256-hash": "replace-this-with-the-sha256-hash-of-your-admin-code"
+  },
   "backup": {
     "backup-frequency-minutes": 20,
     "use-aws-s3-backup": false,

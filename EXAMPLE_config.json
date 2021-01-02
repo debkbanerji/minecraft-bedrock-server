@@ -7,7 +7,7 @@
 
 {
   "accept-official-minecraft-server-eula": false,
-  "minecraft-server-version": "1.16.0.2",
+  "minecraft-server-version": "1.16.201.02",
   "server-properties": {
     "server-name": "Dedicated Node S3 Server",
     "gamemode": "survival",

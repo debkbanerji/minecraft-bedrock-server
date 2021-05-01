@@ -37,8 +37,10 @@ const downloadServerIfNotExists = util.promisify((platform, callback) => {
         })).on('finish', () => {
           console.log(`Unzipped server into ${UNZIPPED_SERVER_FOLDER_PATH}`);
           // Mark the executable with 'chmod +x'
-          fs.chmodSync(SERVER_EXECUTABLE_PATH, '755');
-          console.log(`Marked ${SERVER_EXECUTABLE_PATH} as executable`)
+          if (platform === 'linux') {
+            fs.chmodSync(SERVER_EXECUTABLE_PATH, '755');
+            console.log(`Marked ${SERVER_EXECUTABLE_PATH} as executable`)
+          }
           callback(null, true); // return true if we had to redownload
         });
       });

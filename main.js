@@ -346,10 +346,10 @@ downloadServerIfNotExists(platform)
                 });
             };
 
-            if (platform === "linux") {
+            if (platform === "linux" || platform === 'win32') {
                 spawnServer();
             } else {
-                throw "Unsupported platform - must be Ubuntu 18.3+ based";
+              throw 'Unsupported platform - must be Windows 10 or Ubuntu 18+ based';
             }
 
             let lastQueryWasSaveSucccessful = false;

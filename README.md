@@ -132,7 +132,7 @@ There are 4 types of backups that can be created by the server:
 
 | Backup Type | Description |
 | ----------- | ----------- |
-| `SCHEDULED` | These types of backups are periodically created by the server at regular intervals, according to the value defined in `backup-frequency-minutes`. Be careful not too make this too small if your world size grows or as the time it takes to create backups increases, scheduled backups may overlap. If you keep the default value, this is unlikely to happen unless your world is very large and/or your internet is very slow. |
+| `SCHEDULED` | These types of backups are periodically created by the server at regular intervals, according to the value defined in `backup-frequency-minutes`. Be careful not to make this too small if your world size grows or as the time it takes to create backups increases, scheduled backups may overlap. If you keep the default value, this is unlikely to happen unless your world is very large and/or your internet is very slow. |
 | `MANUAL` | Typing in the `backup` command causes one of these backups to be created. |
 |`ON_STOP`| One of these backups is created every time the server is gracefully stopped using the `stop` command |
 |`ON_FORCED_STOP`| If the server is killed ungracefully, it will try to create one of these types of backups. This is more like a 'last resort' that may also help with debugging. These backups are very sketchy and due to the nature of forced stops they could be incomplete, corrupted, or not uploaded to Amazon S3 properly. |

@@ -145,17 +145,21 @@ if ((uiConfig || {}).enabled) {
     });
 
     router.get("/resource-usage", (req, res) => {
-        pidusage(bs.pid, (err, stats) => {
-            let result = {};
-            if (stats != null) {
-                result = {
-                    cpu: stats.cpu,
-                    elapsed: stats.elapsed,
-                    memory: stats.memory
-                };
-            }
-            res.send(result);
-        });
+        if (bs != null) {
+            pidusage(bs.pid, (err, stats) => {
+                let result = {};
+                if (stats != null) {
+                    result = {
+                        cpu: stats.cpu,
+                        elapsed: stats.elapsed,
+                        memory: stats.memory
+                    };
+                }
+                res.send(result);
+            });
+        } else {
+            res.send({});
+        }
     });
 
     router.get("/salt", (req, res) => {
@@ -405,22 +409,24 @@ downloadServerIfNotExists(platform)
             );
 
             const printResourceUsage = () => {
-                pidusage(bs.pid, function(err, stats) {
-                    console.log(
-                        `Resource Usage as of ${new Date().toLocaleString()}:`
-                    );
-                    console.log(
-                        `CPU Percentage (from 0 to 100*vcore): ${stats.cpu.toFixed(
+                if (bs != null) {
+                    pidusage(bs.pid, function(err, stats) {
+                        console.log(
+                            `Resource Usage as of ${new Date().toLocaleString()}:`
+                        );
+                        console.log(
+                            `CPU Percentage (from 0 to 100*vcore): ${stats.cpu.toFixed(
                             3
                         )}%`
-                    );
-                    console.log(`RAM: ${formatBytes(stats.memory)}`);
-                    console.log(
-                        `Wrapped Server Uptime : ${sec2time(
+                        );
+                        console.log(`RAM: ${formatBytes(stats.memory)}`);
+                        console.log(
+                            `Wrapped Server Uptime : ${sec2time(
                             Math.round(stats.elapsed / 1000)
                         )} (hh:mm:ss)`
-                    );
-                });
+                        );
+                    });
+                }
             };
 
             const triggerGracefulExit = () => {

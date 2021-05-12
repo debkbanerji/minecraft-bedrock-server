@@ -1,8 +1,13 @@
 const fs = require("fs");
 const assert = require("assert");
-const {Readable, Writable} = require("stream");
+const {
+    Readable,
+    Writable
+} = require("stream");
 const readline = require("readline");
-let {spawn} = require("child_process");
+let {
+    spawn
+} = require("child_process");
 const pidusage = require("pidusage");
 const express = require("express");
 const {
@@ -17,8 +22,12 @@ const {
 if (platform === "win32") {
     spawn = require("cross-spawn");
 }
-const {downloadServerIfNotExists} = require("./download-server.js");
-const {createServerProperties} = require("./create-server-properties.js");
+const {
+    downloadServerIfNotExists
+} = require("./download-server.js");
+const {
+    createServerProperties
+} = require("./create-server-properties.js");
 const {
     createBackupBucketIfNotExists,
     downloadRemoteBackups,
@@ -64,8 +73,7 @@ function formatBytes(a, b = 3) {
         d = Math.floor(Math.log(a) / Math.log(1024));
     return (
         parseFloat((a / Math.pow(1024, d)).toFixed(c)) +
-        " " +
-        ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+        " " + ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
     );
 }
 
@@ -114,13 +122,13 @@ if ((uiConfig || {}).enabled) {
         return (
             (clientHashWithSalt || "").toUpperCase() ===
             crypto
-                .createHash("sha256")
-                .update(
-                    uiConfig["admin-code-sha256-hash"].toUpperCase() +
-                        salt.toUpperCase()
-                )
-                .digest("hex")
-                .toUpperCase()
+            .createHash("sha256")
+            .update(
+                uiConfig["admin-code-sha256-hash"].toUpperCase() +
+                salt.toUpperCase()
+            )
+            .digest("hex")
+            .toUpperCase()
         );
     }
 
@@ -131,8 +139,8 @@ if ((uiConfig || {}).enabled) {
     router.get("/terminal-out", (req, res) => {
         res.send(
             [`${MAX_STORED_LINES} latest lines of terminal output:`]
-                .concat(consoleLogBuffer)
-                .join("<br>")
+            .concat(consoleLogBuffer)
+            .join("<br>")
         );
     });
 
@@ -164,8 +172,14 @@ if ((uiConfig || {}).enabled) {
     });
 
     router.post("/stop", (req, res) => {
-        const {body} = req;
-        const {adminCodeHash} = {body};
+        const {
+            body
+        } = req;
+        const {
+            adminCodeHash
+        } = {
+            body
+        };
         setTimeout(() => {
             if (clientHashIsValid(req.header("Authorization"))) {
                 rl.write("stop\n");
@@ -178,8 +192,14 @@ if ((uiConfig || {}).enabled) {
     });
 
     router.post("/trigger-manual-backup", (req, res) => {
-        const {body} = req;
-        const {adminCodeHash} = {body};
+        const {
+            body
+        } = req;
+        const {
+            adminCodeHash
+        } = {
+            body
+        };
         setTimeout(() => {
             if (clientHashIsValid(req.header("Authorization"))) {
                 rl.write("backup\n");
@@ -194,7 +214,9 @@ if ((uiConfig || {}).enabled) {
     });
 
     router.post("/trigger-print-resource-usage", (req, res) => {
-        const {body} = req;
+        const {
+            body
+        } = req;
         setTimeout(() => {
             if (clientHashIsValid(req.header("Authorization"))) {
                 rl.write("resource-usage\n");
@@ -209,7 +231,9 @@ if ((uiConfig || {}).enabled) {
     });
 
     router.post("/trigger-print-player-list", (req, res) => {
-        const {body} = req;
+        const {
+            body
+        } = req;
         setTimeout(() => {
             if (clientHashIsValid(req.header("Authorization"))) {
                 rl.write("list\n");
@@ -224,8 +248,14 @@ if ((uiConfig || {}).enabled) {
     });
 
     router.post("/trigger-restore-backup", async (req, res) => {
-        const {body} = req;
-        const {adminCodeHash} = {body};
+        const {
+            body
+        } = req;
+        const {
+            adminCodeHash
+        } = {
+            body
+        };
         setTimeout(async () => {
             if (clientHashIsValid(req.header("Authorization"))) {
                 const backup = body.backup;
@@ -349,7 +379,7 @@ downloadServerIfNotExists(platform)
             if (platform === "linux" || platform === 'win32') {
                 spawnServer();
             } else {
-              throw 'Unsupported platform - must be Windows 10 or Ubuntu 18+ based';
+                throw 'Unsupported platform - must be Windows 10 or Ubuntu 18+ based';
             }
 
             let lastQueryWasSaveSucccessful = false;

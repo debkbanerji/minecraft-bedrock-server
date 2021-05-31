@@ -39,7 +39,8 @@ const SERVER_PROPERTIES_FIELDS = [
   'player-movement-score-threshold',
   'player-movement-distance-threshold',
   'player-movement-duration-threshold-in-ms',
-  'correct-player-movement'
+  'correct-player-movement',
+  'level-seed'
 ]
 const SEC_IN_MIN = 60;
 const MS_IN_SEC = 1000;

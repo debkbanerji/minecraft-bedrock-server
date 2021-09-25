@@ -1,4 +1,4 @@
-![Minecraft Multiplayer Banner](https://www.minecraft.net/content/dam/games/minecraft/key-art/playtheway-minecraft.png.transform/minecraft-image-large/image.png)
+![Minecraft Multiplayer Banner](readme-assets/multiplayer-banner.png)
 Credit for all images and base server code: [Mojang](https://www.minecraft.net/en-us/about-minecraft)
 
 # Minecraft Bedrock Edition Server
@@ -8,7 +8,7 @@ Made with ❤️ by Deb
 
 This is a smart and relatively easy to use wrapper around the [Minecraft Bedrock Edition server](https://www.minecraft.net/en-us/download/server/bedrock/) that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals. Note that the server software that this wraps is, as of the time of writing, currently in alpha.
 
-![2 Players](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-survive.png)
+![2 Players](readme-assets/2-players.png)
 
 ### Bedrock Edition vs. Java Edition
 This is a Minecraft Bedrock Edition server, so it is designed to be connected to using the cross platform compatible Windows 10, Nintendo Switch, Xbox One, and Pocket editions of Minecraft, with a little luck. Though connecting to arbitrary servers (such as those set up using this software) from editions that are not the Windows 10 edition is not officially supported, there is a workaround that I tested that worked pretty well on Nintendo Switch, and which should(?) also work for other versions. (see the **Connecting from not Windows 10** section for info on how to do this)
@@ -26,7 +26,7 @@ I've been playing with my friends, and this works great with our (relatively) sm
 This server software is not designed to support dozens upon dozens of users, or for worlds whose sizes may expand to the order of gigabytes, since depending on your network connection, periodic backups may not work as well with large world sizes, even if your system's hardware can keep up. Furthermore, it has been written to be as easy as possible to get up and running and so does not have support for more advanced server features. Finally, Mojang's publicly released server software is (as of the time of writing) still in alpha, and therefore is inherently more prone to bugs. You can try, and there's a good chance it would work, given that it is running on a machine with sufficient hardware and network bandwidth, but do not be surprised if it does not.
 
 ## Setting It Up
-![Getting Started](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-beresourceful.png)
+![Getting Started](readme-assets/getting-started.png)
 
 ### System requirements
 - A computer with internet access running [Ubuntu 18.04](http://releases.ubuntu.com/18.04.4/) or later, or Windows 10
@@ -120,7 +120,7 @@ Open Minecraft, make sure you're logged in to your Microsoft account, and naviga
 If you're not using the Windows 10 Edition, you may still be able to connect. Try the same steps as the **Connecting from the Windows 10 Edition** section, and if that doesn't work, try [this tutorial](https://www.youtube.com/watch?v=zalT_oR1nPM) to change your DNS to the BedrockConnect DNS followed by the Windows 10 connection steps again. The tutorial is designed for Switch, but following more or less the same steps should work for Xbox One if you're lucky. If not, once again, Google is your friend.
 
 ## The Backup System
-![Redstone](https://www.minecraft.net/content/dam/minecraft/pmp/pmp-minecraft-howitworks-buildsomething.png)
+![Redstone](readme-assets/redstone.png)
 
 The `backup` field in the `config.json` file defines how the server behaves with regard to creating backups.
 

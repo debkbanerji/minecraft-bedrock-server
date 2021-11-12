@@ -17,6 +17,7 @@ const {
     BACKUP_TYPES,
     MS_IN_MIN,
     MS_IN_SEC,
+    BUCKET_LOCK_FILE_NAME,
     platform
 } = require("./utils.js");
 if (platform === "win32") {
@@ -35,7 +36,10 @@ const {
     restoreLocalBackup,
     restoreLatestLocalBackup,
     createUnscheduledBackup,
-    getBackupList
+    getBackupList,
+    doesLockFileExistOrS3Disabled,
+    createLockFileIfS3Enabled,
+    deleteLockFileIfExists,
 } = require("./backup.js");
 const crypto = require("crypto");
 
@@ -300,6 +304,15 @@ downloadServerIfNotExists(platform)
     .then(() => {
         createServerProperties().then(async () => {
             await createBackupBucketIfNotExists();
+            const doesLockFileExist = await doesLockFileExistOrS3Disabled();
+            if (doesLockFileExist) {
+                console.error(`\nExiting server; a lock file, ${BUCKET_LOCK_FILE_NAME} exists within the S3 backup bucket.`
+                  + ' This usually means another server is connected to the backup bucket.'
+                  + ' This can also happen if the server did not exit gracefully last time.'
+                  + ' If that is the case, make sure everything is okay, manually delete the lock file from S3, then try starting the server again.')
+                process.exit(0);
+            }
+            await createLockFileIfS3Enabled();
             await downloadRemoteBackups();
             await restoreLatestLocalBackup();
 
@@ -370,7 +383,8 @@ downloadServerIfNotExists(platform)
                             clearInterval(saveQueryInterval);
                             clearInterval(saveHoldInterval);
                             bs.stdin.write("stop\r\n");
-                            setTimeout(() => {
+                            setTimeout(async () => {
+                                await deleteLockFileIfExists();
                                 process.exit(0);
                             }, MS_IN_SEC);
                         }

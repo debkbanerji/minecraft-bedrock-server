@@ -16,6 +16,8 @@ const {
   BACKUP_FOLDER_NAME,
   BACKUP_FOLDER_PATH,
   BACKUP_TYPES,
+  BUCKET_LOCK_FILE_NAME,
+  BUCKET_LOCK_FILE_CONTENTS_PATH,
   MS_IN_SEC,
   platform
 } = require('./utils.js');
@@ -309,6 +311,47 @@ async function getBackupList() {
   return allArchives;
 }
 
+async function doesLockFileExistOrS3Disabled() {
+  if (!s3) {
+    return false;
+  }
+  const bucketContents = await s3.listObjects({
+    Bucket: bucketName
+  }).promise();
+  return await bucketContents.Contents.map(entry => entry.Key).includes(BUCKET_LOCK_FILE_NAME);
+}
+
+const createLockFileIfS3Enabled = util.promisify((callback) => {
+  if (s3) {
+    const readStream = fs.createReadStream(BUCKET_LOCK_FILE_CONTENTS_PATH);
+    var params = {
+        Bucket: bucketName,
+        Key: BUCKET_LOCK_FILE_NAME,
+        Body: readStream
+    };
+    s3.upload(params, function(err, data) {
+        if (!err) {
+            console.log(`Successfully created lock file ${BUCKET_LOCK_FILE_NAME} in AWS S3`);
+            callback();
+        } else {
+            console.log(`Error created lock file ${BUCKET_LOCK_FILE_NAME} in AWS S3:`);
+            console.error(err);
+        }
+    });
+  }
+});
+
+async function deleteLockFileIfExists() {
+  if (s3) {
+    await s3.deleteObject({
+      Bucket: bucketName,
+      Key: BUCKET_LOCK_FILE_NAME
+    }).promise();
+    console.log(`Successfully removed lock file from S3 bucket: ${BUCKET_LOCK_FILE_NAME}`);
+  }
+}
+
+
 module.exports = {
   createBackupBucketIfNotExists,
   downloadRemoteBackups,
@@ -316,5 +359,8 @@ module.exports = {
   restoreLocalBackup,
   restoreLatestLocalBackup,
   createUnscheduledBackup,
-  getBackupList
+  getBackupList,
+  doesLockFileExistOrS3Disabled,
+  createLockFileIfS3Enabled,
+  deleteLockFileIfExists,
 };

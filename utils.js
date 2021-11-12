@@ -41,10 +41,12 @@ const SERVER_PROPERTIES_FIELDS = [
   'player-movement-duration-threshold-in-ms',
   'correct-player-movement',
   'level-seed'
-]
+];
 const SEC_IN_MIN = 60;
 const MS_IN_SEC = 1000;
 const MS_IN_MIN = MS_IN_SEC * SEC_IN_MIN;
+const BUCKET_LOCK_FILE_NAME = 'BUCKET_LOCK.txt'
+const BUCKET_LOCK_FILE_CONTENTS_PATH='./LOCK_FILE_TEXT.txt'
 
 
 const platform = os.platform();
@@ -78,5 +80,7 @@ module.exports = {
   SEC_IN_MIN,
   MS_IN_SEC,
   MS_IN_MIN,
+  BUCKET_LOCK_FILE_NAME,
+  BUCKET_LOCK_FILE_CONTENTS_PATH,
   platform
 }

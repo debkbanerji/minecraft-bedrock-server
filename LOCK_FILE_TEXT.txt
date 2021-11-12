@@ -1,0 +1,1 @@
+WARNING: If this file exists, it is very likely an instance of the server is using this bucket - only delete this if you're sure this is not the case! You usually only want to do this if you're recovering from an ungraceful server exit.

@@ -99,7 +99,7 @@ First, you need to figure out what your machine's IP address within your local n
 
 Once you have your port, and the internal IP address of your machine, you need to set up port forwarding on your router. This can vary from router to router, but shouldn't be too tricky - I recommend Googling how to do this. You want to associate the port that your server will listen on to your machine's local ip address.
 
-Also take a note of your external IP address - Googling 'what is my ip' will give this to you. (Google gives it to you within the search results page). If you don't link a domain, you'll have to give this to your friends so they can connect to your server, so be extremely careful who you share this with.
+Also take a note of your external IP address - Googling 'what is my ip' will give this to you. (Google gives it to you within the search results page). If you don't link a domain, you'll have to give this to your friends so they can connect to your server, so be extremely careful who you share this with (also be very careful about who you share the domain with).
 
 #### Linking a domain (optional)
 Once again, Google will likely give you a much more comprehensive tutorial on how to do this than I can here. My domain is connected to Cloudflare, so I used [this tutorial](https://www.youtube.com/watch?v=9xfsH7bmSFc) to link my domain, though it should help even if you don't use Cloudflare. Note that when the tutorial says you should enter your ip address and port, you should use the external ip address you found by Googling, and the port you set in the config file.

@@ -338,6 +338,8 @@ const createLockFileIfS3Enabled = util.promisify((callback) => {
             console.error(err);
         }
     });
+  } else {
+    callback();
   }
 });
 

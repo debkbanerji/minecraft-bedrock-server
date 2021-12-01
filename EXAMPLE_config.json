@@ -23,6 +23,7 @@
     "player-idle-timeout": 30,
     "max-threads": 8,
     "level-name": "My Cool Level",
+    "level-seed": null,
     "default-player-permission-level": "member",
     "texturepack-required": false,
     "content-log-file-enabled": false,

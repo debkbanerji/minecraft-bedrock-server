@@ -9,7 +9,7 @@ const {
 } = require('./utils.js')
 
 const getServerPropertiesContentString = (serverProperties) => {
-  return Object.keys(serverProperties).map((property) => `${property}=${serverProperties[property]}`).join('\n\n');
+  return Object.keys(serverProperties).map((property) => serverProperties[property] != null ? `${property}=${serverProperties[property]}` : null).filter(line => line != null).join('\n\n');
 }
 
 const createServerProperties = util.promisify((callback) => {

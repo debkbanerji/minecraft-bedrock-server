@@ -27,7 +27,7 @@
     "texturepack-required": false,
     "content-log-file-enabled": false,
     "compression-threshold": 1,
-    "server-authoritative-movement": true,
+    "server-authoritative-movement": "server-auth",
     "player-movement-score-threshold": 20,
     "player-movement-distance-threshold": 0.3,
     "player-movement-duration-threshold-in-ms": 500,

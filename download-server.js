@@ -1,5 +1,5 @@
 // Downloads the server code from Microsoft
-const fs = require('fs');
+const fs = require('fs-extra');
 const assert = require('assert');
 const https = require('https');
 const unzipper = require('unzipper')
@@ -35,6 +35,7 @@ const downloadServerIfNotExists = util.promisify((platform, callback) => {
           path: UNZIPPED_SERVER_FOLDER_PATH
         })).on('finish', () => {
           console.log(`Unzipped server into ${UNZIPPED_SERVER_FOLDER_PATH}`);
+          fs.removeSync(ZIPPED_SERVER_PATH);
           // Mark the executable with 'chmod +x'
           if (platform === 'linux') {
             fs.chmodSync(SERVER_EXECUTABLE_PATH, '755');

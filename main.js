@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require('fs-extra');
 const assert = require("assert");
 const {
     Readable,
@@ -12,6 +12,7 @@ const pidusage = require("pidusage");
 const express = require("express");
 const {
     CONFIG_FILE_PATH,
+    UNZIPPED_SERVERS_CONTAINER,
     UNZIPPED_SERVER_FOLDER_PATH,
     BACKUP_TYPES,
     MS_IN_MIN,
@@ -48,6 +49,7 @@ const rl = readline.createInterface({
     terminal: false
 });
 const configFile = fs.readFileSync(CONFIG_FILE_PATH, "utf8");
+fs.ensureDirSync(UNZIPPED_SERVERS_CONTAINER);
 const config = JSON.parse(configFile);
 assert(
     config["accept-official-minecraft-server-eula"],

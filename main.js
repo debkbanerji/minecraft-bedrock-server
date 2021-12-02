@@ -12,7 +12,6 @@ const pidusage = require("pidusage");
 const express = require("express");
 const {
     CONFIG_FILE_PATH,
-    UNZIPPED_SERVER_FOLDER_NAME,
     UNZIPPED_SERVER_FOLDER_PATH,
     BACKUP_TYPES,
     MS_IN_MIN,

@@ -5,7 +5,6 @@ const https = require('https');
 const unzipper = require('unzipper')
 const util = require('util');
 const {
-  UNZIPPED_SERVER_FOLDER_NAME,
   UNZIPPED_SERVER_FOLDER_PATH,
   ZIPPED_SERVER_PATH,
   SERVER_EXECUTABLE_PATH,

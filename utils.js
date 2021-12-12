@@ -60,6 +60,16 @@ const BACKUP_TYPES = Object.freeze({
 });
 const BACKUP_TYPE_REGEX_FRAGMENT = `(${Object.keys(BACKUP_TYPES).join('|')})`;
 
+function formatBytes(a, b = 3) {
+    if (0 === a) return "0 Bytes";
+    const c = 0 > b ? 0 : b,
+        d = Math.floor(Math.log(a) / Math.log(1024));
+    return (
+        parseFloat((a / Math.pow(1024, d)).toFixed(c)) +
+        " " + ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    );
+}
+
 
 module.exports = {
   CONFIG_FILE_PATH,
@@ -84,5 +94,6 @@ module.exports = {
   MS_IN_MIN,
   BUCKET_LOCK_FILE_NAME,
   BUCKET_LOCK_FILE_CONTENTS_PATH,
+  formatBytes,
   platform
 }

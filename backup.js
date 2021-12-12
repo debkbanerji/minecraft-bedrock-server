@@ -18,6 +18,7 @@ const {
   BUCKET_LOCK_FILE_NAME,
   BUCKET_LOCK_FILE_CONTENTS_PATH,
   MS_IN_SEC,
+  formatBytes,
   platform
 } = require('./utils.js');
 
@@ -318,7 +319,7 @@ async function getBackupSizeList() {
     const {size} = stats;
     const numberPrefixRegex = /^\d*/;
     const timestamp = (archiveName || "").match(numberPrefixRegex)[0];
-    return timestamp != null ? {name: archiveName, size, timestamp: Number(timestamp)}: null;
+    return timestamp != null ? {name: archiveName, size, sizeString: formatBytes(size), timestamp: Number(timestamp)}: null;
   }).filter(entry => entry != null);
 }
 

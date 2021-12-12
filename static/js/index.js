@@ -298,6 +298,13 @@ function refreshBackupList() {
                 dropdownOptions.appendChild(option);
             });
         });
+
+    // Also update the chart
+    fetch("/backup-size-list")
+        .then(response => response.json())
+        .then(backups => {
+          // TODO: Finish UI implementation
+        });
 }
 
 function setSelectedBackup(backup) {

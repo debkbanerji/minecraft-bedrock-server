@@ -37,6 +37,7 @@ const {
     restoreLatestLocalBackup,
     createUnscheduledBackup,
     getBackupList,
+    getBackupSizeList,
     doesLockFileExistOrS3Disabled,
     createLockFileIfS3Enabled,
     deleteLockFileIfExists,
@@ -287,6 +288,11 @@ if ((uiConfig || {}).enabled) {
 
     router.get("/backup-list", async (req, res) => {
         const backups = await getBackupList();
+        res.send(backups);
+    });
+
+    router.get("/backup-size-list", async (req, res) => {
+        const backups = await getBackupSizeList();
         res.send(backups);
     });
 

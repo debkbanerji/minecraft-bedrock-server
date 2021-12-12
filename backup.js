@@ -310,6 +310,18 @@ async function getBackupList() {
   return allArchives;
 }
 
+async function getBackupSizeList() {
+  await fs.ensureDir(BACKUP_FOLDER_PATH);
+  const allArchiveNames = await fs.readdir(BACKUP_FOLDER_PATH);
+  return allArchiveNames.map(archiveName => {
+    const stats = fs.statSync(`${BACKUP_FOLDER_PATH}/${archiveName}`);
+    const {size} = stats;
+    const numberPrefixRegex = /^\d*/;
+    const timestamp = (archiveName || "").match(numberPrefixRegex)[0];
+    return timestamp != null ? {name: archiveName, size, timestamp: Number(timestamp)}: null;
+  }).filter(entry => entry != null);
+}
+
 async function doesLockFileExistOrS3Disabled() {
   if (!s3) {
     return false;
@@ -361,6 +373,7 @@ module.exports = {
   restoreLatestLocalBackup,
   createUnscheduledBackup,
   getBackupList,
+  getBackupSizeList,
   doesLockFileExistOrS3Disabled,
   createLockFileIfS3Enabled,
   deleteLockFileIfExists,

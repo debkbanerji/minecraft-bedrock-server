@@ -277,12 +277,6 @@ if ((uiConfig || {}).enabled) {
         }, UI_COMMAND_DELAY);
     });
 
-    // TODO: Cleanup
-    router.get("/backup-list", async (req, res) => {
-        const backups = await getBackupList();
-        res.send(backups);
-    });
-
     router.get("/backup-size-list", async (req, res) => {
         const backups = await getBackupSizeList();
         res.send(backups);

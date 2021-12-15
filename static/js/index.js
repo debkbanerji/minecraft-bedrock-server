@@ -1,3 +1,15 @@
+const backupTypeToClassColor = {
+    SCHEDULED: 'text-secondary',
+    MANUAL: 'text-info',
+    ON_STOP: 'text-primary',
+    ON_FORCED_STOP: 'text-danger',
+}
+
+function getClassForBackup(backupName) {
+    const backupType = backupName.replace(/((\d+_)|(\.zip))/gi, '');
+    return backupTypeToClassColor[backupType] || '';
+}
+
 function formatBytes(a, b = 3) {
     if (0 === a) return "0 Bytes";
     const c = 0 > b ? 0 : b,
@@ -271,7 +283,7 @@ function triggerRestoreBackup() {
 
 function getBackupDescriptionString(backup) {
     if (!backup) {
-      return '';
+        return '';
     }
     const numberPrefixRegex = /^\d*/;
     const timestamp = (backup.name || "").match(numberPrefixRegex)[0];
@@ -291,7 +303,7 @@ function refreshBackupList() {
             dropdownOptions.innerHTML = "";
             backups.forEach(backup => {
                 const option = document.createElement("a");
-                option.className = "dropdown-item";
+                option.className = "dropdown-item " + getClassForBackup(backup.name);
                 option.textContent = backup.name + getBackupDescriptionString(backup);
                 option.value = backup.name;
                 option.addEventListener("click", () =>

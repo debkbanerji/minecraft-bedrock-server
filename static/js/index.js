@@ -60,7 +60,6 @@ function enableInteraction() {
     interactionButtons.forEach(button => {
         button.disabled = false;
     });
-    setSelectedBackup(document.getElementById("selected-backup").innerHTML);
 }
 
 function attemptLogin() {
@@ -270,17 +269,20 @@ function triggerRestoreBackup() {
         });
 }
 
-function getBackupTimestampString(backup) {
+function getBackupDescriptionString(backup) {
+    if (!backup) {
+      return '';
+    }
     const numberPrefixRegex = /^\d*/;
-    const timestamp = (backup || "").match(numberPrefixRegex)[0];
+    const timestamp = (backup.name || "").match(numberPrefixRegex)[0];
     return timestamp ?
-        ` (Likely created on ${new Date(timestamp * 1000).toLocaleString()})` :
+        ` (${backup.sizeString}, Likely created on ${new Date(timestamp * 1000).toLocaleString()})` :
         "";
 }
 
 function refreshBackupList() {
     setSelectedBackup(null);
-    fetch("/backup-list")
+    fetch("/backup-size-list")
         .then(response => response.json())
         .then(backups => {
             const dropdownOptions = document.getElementById(
@@ -290,28 +292,21 @@ function refreshBackupList() {
             backups.forEach(backup => {
                 const option = document.createElement("a");
                 option.className = "dropdown-item";
-                option.textContent = backup + getBackupTimestampString(backup);
-                option.value = backup;
+                option.textContent = backup.name + getBackupDescriptionString(backup);
+                option.value = backup.name;
                 option.addEventListener("click", () =>
                     setSelectedBackup(backup)
                 );
                 dropdownOptions.appendChild(option);
             });
         });
-
-    // Also update the chart
-    fetch("/backup-size-list")
-        .then(response => response.json())
-        .then(backups => {
-          // TODO: Finish UI implementation
-        });
 }
 
 function setSelectedBackup(backup) {
-    document.getElementById("selected-backup").innerHTML = backup;
+    document.getElementById("selected-backup").innerHTML = backup?.name || '';
     document.getElementById(
         "selected-backup-timestamp"
-    ).innerHTML = getBackupTimestampString(backup);
+    ).innerHTML = getBackupDescriptionString(backup);
     if (!backup) {
         document.getElementById(
             "trigger-restore-backup-button"

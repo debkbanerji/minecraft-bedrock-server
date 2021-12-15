@@ -311,6 +311,7 @@ async function getBackupList() {
   return allArchives;
 }
 
+// TODO: asyncify
 async function getBackupSizeList() {
   await fs.ensureDir(BACKUP_FOLDER_PATH);
   const allArchiveNames = await fs.readdir(BACKUP_FOLDER_PATH);

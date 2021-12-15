@@ -20,6 +20,8 @@ This is great for people who want to play online with their friends across diffe
 
 If you're tech savvy enough, you could probably deploy this Node app to the cloud without much trouble, as long as the machine you're running it on has enough power to run a Minecraft server.
 
+If you have the hardware and internet bandwidth, you can even go beyond the max number of players supported by a realms server, by tweaking the values in the config file.
+
 I've been playing with my friends, and this works great with our (relatively) small world sizes, giving us peace of mind since it periodically backs up our world in case we run into bugs in Mojang's alpha server software.
 
 ### Who it's not for

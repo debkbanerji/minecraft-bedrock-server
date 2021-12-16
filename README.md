@@ -94,6 +94,8 @@ In order to properly stop the server, type in the following command:
 #### Connecting to the UI
 If you've enabled backups in the UI section of the config file, you can access the web UI on the port you've defined in the UI section, so if your UI port is `3000`, you'll be able to access the UI on the machine you're running the server on at `localhost:3000` in your browser. If you want other people to be able to access this admin UI, you can forward this port using the information in the next section, but be careful when doing this - while the UI has some protection against stuff like replay attacks, and every change request needs to be authenticated, the server does not (yet) have a UI killswitch or other mechanism to protect against repeated password guesses. Also avoid sharing the UI if you don't want other people to see stuff like the terminal ouput for the server, or a list of backups, since these requests do not require an admin code.
 
+The UI allows you to monitor stuff such as recent server output and performance. You can also view connected players, manually create backups, restore backups, stop the server, etc.
+
 #### Port forwarding/IP stuff
 Take a note of the `server-port` field that you set under `server-properties` in `config.json`. This is the port that the server will listen on once you set up port forwarding, and you'll need to give this to anyone who wants to connect to it. The default value for this is `19132`.
 
@@ -149,7 +151,9 @@ Whenever the server starts, if `use-aws-s3-backup` is set to true, the latest ba
 
 **Warning: It's a good idea to make sure your computer's time is synced and consistent so the correct backups are always retrieved and restored**
 
-If you want to restore a specific backup to the server when it is running, you can use the `force-restore <BACKUP_FILE_NAME>` command, which will create a separate backup of the current server state, gracefully stop the server, restore the backup you specified, and restart the server.
+If you want to restore a specific backup to the server when it is running, you can use the `force-restore <BACKUP_FILE_NAME>` command, which will create a separate backup of the current server state, gracefully stop the server, restore the backup you specified, and restart the server. You can also do this from the UI pretty easily.
+
+This is also useful if you want to import your existing world into the server. Just make sure your level name matches the one in your config and create a zip file with your level (a folder matching the level name) at the root. Then name your zip file something you'll recognize, drop it into the `backups` folder and restore it either from the UI or the terminal. If you're unsure about the format, you can look at some of the backups the server creates on its own.
 
 ### Automatic purging of old backups
 

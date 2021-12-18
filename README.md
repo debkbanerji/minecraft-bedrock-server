@@ -6,7 +6,7 @@ Made with ❤️ by Deb
 
 ## What Is It?
 
-This is a smart and relatively easy to use wrapper around the [Minecraft Bedrock Edition server](https://www.minecraft.net/en-us/download/server/bedrock/) that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals. Note that the server software that this wraps is, as of the time of writing, currently in alpha.
+This is a smart and easy to use wrapper around the [Minecraft Bedrock Edition server](https://www.minecraft.net/en-us/download/server/bedrock/) that automatically backs up to local storage and (optionally) Amazon S3 at regular intervals. Note that the server software that this wraps is, as of the time of writing, currently in alpha.
 
 ![2 Players](readme-assets/2-players.png)
 

@@ -169,7 +169,7 @@ Mojang's server software, which this software uses, is still in alpha, so it cou
 This issue seems to have been fixed somewhere around Mojang's server version `1.16.201.02`, and my testing seems fine so I've enabled Windows support in this repo. Lmk if you run into any issues.
 
 ### Scaling issues?
-I wouldn't recommend using this server to host dozens upon dozens of clients. It might work well given the correct configuration values, hardware, and network bandwith, but I haven't done any large scale tests, so attempt this at your own peril.
+I wouldn't recommend using this server to host dozens upon dozens of clients. It might work well given the correct configuration values, hardware, and network bandwidth, but I haven't done any large scale tests, so attempt this at your own peril.
 
 ## Disclaimer
 Please read the license for this repository. I am not responsible for any hardware/software/financial?/legal? problems, lost worlds, or any other issues that may arise when using this software. If you do lose information, however, I could help you if you open a GitHub issue, though once again I am not responsible for anything that may go wrong when attempting recovery.

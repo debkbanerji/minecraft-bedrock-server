@@ -308,14 +308,14 @@ async function downloadRemoteBackups() {
 async function getBackupList() {
   await fs.ensureDir(BACKUP_FOLDER_PATH);
   const allArchives = await fs.readdir(BACKUP_FOLDER_PATH);
-  return allArchives;
+  return allArchives.filter(archive => !/\.gitkeep/.test(archive));
 }
 
 // TODO: asyncify
 async function getBackupSizeList() {
   await fs.ensureDir(BACKUP_FOLDER_PATH);
   const allArchiveNames = await fs.readdir(BACKUP_FOLDER_PATH);
-  return allArchiveNames.map(archiveName => {
+  return allArchiveNames.filter(archive => !/\.gitkeep/.test(archive)).map(archiveName => {
     const stats = fs.statSync(`${BACKUP_FOLDER_PATH}/${archiveName}`);
     const {size} = stats;
     const numberPrefixRegex = /^\d*/;
